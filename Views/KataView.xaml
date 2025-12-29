@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="GnuConvert.Views.KataView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Height="Auto" Width="Auto">
+
+    <Grid Background="#FFF5F3EE">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="Ez a nézet a KATA-s illetve egyéb kisvállalkozóknak nyújt segítséget a rendszeres ügyeik és könyvelésik nyomonkövetésében éselvégzésében !" FontSize="24" FontWeight="Bold" Margin="0,0,0,20" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
+            <TextBlock Text="Itt láthatod egy rövid ismertető rész fog következni ami bemutatja a program működését." 
+               FontSize="16" TextAlignment="Center" Margin="0,0,0,30" FontFamily="Century Schoolbook" Foreground="#FF4D4335" />
+            <TextBlock Text=""/>
+        </StackPanel>
+    </Grid>
+</UserControl>
+

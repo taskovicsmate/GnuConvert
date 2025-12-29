@@ -1,0 +1,122 @@
+﻿<Window x:Class="GnuConvert.Views.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls" 
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
+        xmlns:local="clr-namespace:GnuConvert.Views"
+        xmlns:vm="clr-namespace:GnuConvert.ViewModels"
+        xmlns:v="clr-namespace:GnuConvert.Views"
+        Title="Gnu Convert" Height="auto" Width="auto" Background="#FFCABA9C">
+    <Window.Resources>
+        <Style x:Key="FocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" StrokeDashArray="1 2" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" SnapsToDevicePixels="true" StrokeThickness="1"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="Button.Static.Background" Color="#FFDDDDDD"/>
+        <SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
+        <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6"/>
+        <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B"/>
+        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
+        <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
+        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
+        <Style x:Key="FoMenu" TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Background" Value="{StaticResource Button.Static.Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="5" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
+                            <ContentPresenter x:Name="contentPresenter"
+                  Focusable="False"
+                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                  Margin="{TemplateBinding Padding}"
+                  RecognizesAccessKey="True"
+                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                  TextElement.Foreground="{TemplateBinding Foreground}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsDefaulted" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="#FFF5F3EE"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="#102820"/>
+                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="#4D2D18"/>
+
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Pressed.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+
+    <DockPanel>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <!-- felső menü -->
+                <RowDefinition Height="Auto" />
+                <!-- alsó sarok -->
+            </Grid.RowDefinitions>
+
+            <!-- FELSŐ MENÜ -->
+            <StackPanel DockPanel.Dock="Left" Width="200" Background="#FFCABA9C" HorizontalAlignment="Center">
+                <TextBlock Text="Gnu Convert" Foreground="#FF4D2D18" FontSize="20" Margin="10" FontFamily="Century Schoolbook" FontWeight="Bold" />
+                <Button Content="Főoldal" Margin="10" Height="40"  Command="{Binding ShowFooldalCommand}" FontFamily="Century Schoolbook" FontSize="13" Foreground="#FFF5F3EE" RenderTransformOrigin="0.5,0.5" Padding="1,1,1,1" BorderThickness="0.8,0.8,0.8,0.8" Background="#FF4D4335" Style="{DynamicResource ButtonStyle2}" BorderBrush="{x:Null}" >
+                    <Button.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform AngleX="0"/>
+                            <RotateTransform/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Button.RenderTransform>
+
+                </Button>
+                <Button Content="Bank konvertálás" Margin="10" Height="40" Command="{Binding ShowConvertCommand}" FontSize="13" FontFamily="Century Schoolbook" Background="#FF4D4335" Foreground="#FFF5F3EE" BorderThickness="0.8,0.8,0.8,0.8" BorderBrush="{x:Null}" Style="{DynamicResource FoMenu}"  />
+                <Button Content="Webshop konvertálás" Margin="10" Height="40" Command="{Binding ShowWebshopCommand}" FontSize="13" FontFamily="Century Schoolbook" Background="#FF4D4335" Foreground="#FFF5F3EE" BorderThickness="0.8,0.8,0.8,0.8" BorderBrush="{x:Null}" Style="{DynamicResource FoMenu}" />
+                <Button Content="KATA-s vállalkozóknak" Margin="10" Height="40" Command="{Binding ShowKataCommand}" FontSize="13" FontFamily="Century Schoolbook" Background="#FF4D4335" Foreground="#FFF5F3EE" BorderThickness="0.8,0.8,0.8,0.8" BorderBrush="{x:Null}" Style="{DynamicResource FoMenu}" />
+                <Button Style="{DynamicResource FoMenu}" Content="Beállítások" Margin="10" Height="40" Command="{Binding ShowSettingsCommand}" FontSize="13" FontFamily="Arial" Background="#FF4D4335" BorderThickness="0.8,0.8,0.8,0.8" Foreground="#FFF5F3EE" BorderBrush="{x:Null}"  />
+                <Button Content="Kijelentkezés" FontSize="13" FontFamily="Century Schoolbook" Height="40" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="10,10,10,10" Click="Logout_Click" Background="#FF8A6240" BorderThickness="0.8,0.8,0.8,0.8" Foreground="#FFF5F3EE" BorderBrush="{x:Null}" Style="{DynamicResource FoMenu}"/>
+
+            </StackPanel>
+
+            <!-- ALSÓ INFÓ -->
+            <StackPanel Grid.Row="1" DockPanel.Dock="Left" Width="200" Background="#FFCABA9C" HorizontalAlignment="Center">
+                <Label x:Name="label" Content=" Fiók tipusa:" VerticalContentAlignment="Bottom" Cursor="" IsEnabled="False" ForceCursor="True" RenderTransformOrigin="0.5,1" Width="200" Foreground="#FF4D2D18" FontFamily="Century Schoolbook" FontWeight="Bold"/>
+                <Label x:Name="label_Copy" Content="V0.0.1" VerticalContentAlignment="Bottom" Cursor="" IsEnabled="False" HorizontalContentAlignment="Right" ForceCursor="True" Height="24" Margin="0,0,0,5" VerticalAlignment="Bottom" Padding="5,0,5,5" Foreground="#FF4D2D18" FontFamily="Century Schoolbook" FontWeight="Bold"/>
+            </StackPanel>
+        </Grid>
+        <!-- Oldalsó menü -->
+
+
+        <!-- Tartalmi rész -->
+        <ContentControl Content="{Binding CurrentViewModel}" />
+    </DockPanel>
+</Window>
+

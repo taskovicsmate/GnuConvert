@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="GnuConvert.Views.ElofizetesSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Height="Auto" Width="Auto">
+
+    <Grid Background="#FFF5F3EE">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock FontSize="24" FontWeight="Bold" Margin="0,0,0,20" ><Run Language="hu-hu" Text="Előfizetések tipusai"/></TextBlock>
+
+        </StackPanel>
+    </Grid>
+</UserControl>
+
