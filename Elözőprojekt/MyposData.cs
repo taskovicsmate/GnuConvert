@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GnuConvert
+namespace GnuConvert.Elözőprojekt
 {
     public class MyposData
     {
@@ -34,7 +34,7 @@ namespace GnuConvert
 
             if (szamok.Length > 1)
             {
-                var tortosszeg = ($"{szamok[0]}" + $",{szamok[1]}");
+                var tortosszeg = $"{szamok[0]}" + $",{szamok[1]}";
 
                 Osszeg = tortosszeg;
             }

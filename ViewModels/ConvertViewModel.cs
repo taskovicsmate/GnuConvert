@@ -1,4 +1,6 @@
-﻿using Microsoft.ML;
+﻿using GnuConvert.Helpers;
+using GnuConvert.Models.FokonyvSzamok;
+using Microsoft.ML;
 using Microsoft.ML.Data;
 using Org.BouncyCastle.Asn1.Pkcs;
 using Stripe.V2;

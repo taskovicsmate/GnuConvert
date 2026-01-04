@@ -1,4 +1,5 @@
-﻿using GnuConvert.ViewModels;
+﻿using GnuConvert.Models.FokonyvSzamok;
+using GnuConvert.ViewModels;
 using NPOI.HPSF;
 using Stripe.Tax;
 using System;
@@ -16,7 +17,7 @@ using System.Windows.Input;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 
-namespace GnuConvert.ViewModels
+namespace GnuConvert.Services.Settings
 {
     public class AppSettingsManager
     {
@@ -45,9 +46,9 @@ namespace GnuConvert.ViewModels
                     Instance = JsonSerializer.Deserialize<AppSettingsManager>(json);
                     if (Instance != null&& Instance.KonvertaltSzamlakHelye!=null&&Instance.KonvertaltSzamlakHelye!="" )
                     {
-                        ConvertViewModel.KonvertaltSzamlakFileLocation = (Instance.KonvertaltSzamlakHelye);
+                        ConvertViewModel.KonvertaltSzamlakFileLocation = Instance.KonvertaltSzamlakHelye;
 
-                        ConvertViewModel.KivetelesKonvertaltSzamlakFileLocation = (Instance.KivetelesSzamlakHelye);
+                        ConvertViewModel.KivetelesKonvertaltSzamlakFileLocation = Instance.KivetelesSzamlakHelye;
 
                         FokonyvSzamok.FilePath = Instance.FokonyvSzamokHelye;
                         FokonyvSzamok.ReadFile();

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GnuConvert.ViewModels
+namespace GnuConvert.Models.FokonyvSzamok
 {
     public class FokonyvSzam
     {

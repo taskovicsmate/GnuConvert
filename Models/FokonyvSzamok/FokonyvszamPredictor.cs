@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 
 
-namespace GnuConvert.ViewModels
+namespace GnuConvert.Models.FokonyvSzamok
 { 
 
 

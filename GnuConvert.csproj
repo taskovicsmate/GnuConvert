@@ -40,7 +40,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Logic and Others\" />
+    <Folder Include="Services\File\" />
+    <Folder Include="Services\Logging\" />
+    <Folder Include="Services\Conversion\" />
   </ItemGroup>
 
 </Project>

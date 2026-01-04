@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using System.IO;
+using GnuConvert.Services.Settings;
 
 namespace GnuConvert.ViewModels
 {

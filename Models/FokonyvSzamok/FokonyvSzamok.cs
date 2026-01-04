@@ -17,7 +17,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 
-namespace GnuConvert.ViewModels
+namespace GnuConvert.Models.FokonyvSzamok
 {
    public class FokonyvSzamok
     {
@@ -32,7 +32,7 @@ namespace GnuConvert.ViewModels
         public DataTable ReadExcel(string filePath)
         {
             // Az ExcelDataReader bináris olvasója kell a régi .xls-hez
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             using var stream = File.Open(filePath, FileMode.Open, FileAccess.Read);
             using var reader = ExcelReaderFactory.CreateReader(stream);
@@ -60,7 +60,7 @@ namespace GnuConvert.ViewModels
             try
             {
                 // Az ExcelDataReader bináris olvasója kell a régi .xls-hez
-                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
                 using var stream = File.Open(FilePath, FileMode.Open, FileAccess.Read);
                 using var reader = ExcelReaderFactory.CreateReader(stream);

@@ -1,10 +1,11 @@
-﻿using System;
+﻿using GnuConvert.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GnuConvert.ViewModels
+namespace GnuConvert.Helpers
 {
     public class Rule
     {
