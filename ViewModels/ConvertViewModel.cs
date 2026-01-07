@@ -209,6 +209,10 @@ namespace GnuConvert.ViewModels
 
             for (int i = 0; i < Adat.Count; i++)
             {
+                //1. pontos egyezés keresése.
+                //2. Ha létezik a számla a megadott adatok alapján akkor arról kigyüjti az adatokat.
+                //3. ha még mindig nincs egyezés akkor történik a fokonyvszám megjósolása.
+                // speciális konvertálási beállítás lehetne az hogy pár paraméteréz a konvertálásnka a felhasználó saját igénye szerint tudja változtatni.
                 found = false;
                 found = szallitoKereses(Kozlemeny[i]);
                 var Predictor = new FokonyvMegmondo();
