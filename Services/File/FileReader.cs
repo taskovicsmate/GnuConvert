@@ -5,81 +5,83 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using static GnuConvert.ViewModels.ConvertViewModel;
-
 namespace GnuConvert.Services.File
 {
     public class FileReader
     {
-        public void BankFileReader(string bankFileLocation)
+        public List<string> BankFileReader(string bankFileLocation)
         {
+            List<string> bankLines = new List<string>();
             try
             {
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-                StreamReader Reader = new StreamReader(bankFileLocation, Encoding.GetEncoding("ISO-8859-2"));//1252
-                Adat.Clear();
-                var trash = Reader.ReadLine();
+               using StreamReader Reader = new StreamReader(bankFileLocation, Encoding.GetEncoding("ISO-8859-2"));//1252
+               
+                var fileHeader = Reader.ReadLine();
                 while (!Reader.EndOfStream)
                 {
 
 
                     var line = Reader.ReadLine();
-
-
-                    var sor = new Adatok(line);
-                    Adat.Add(sor);
-
+                    bankLines.Add(line);
                     line = "";
+
+                    //var sor = new Adatok(line);
+                    //Adat.Add(sor);
+
                 }
 
-                Reader.Close();
             
 
             }
             catch (Exception e)
             {
-
-                MessageBox.Show(e.StackTrace, "Nem Sikerült a banki fájlt beolvasása.");
+                //Rossz megoldás A sevice rétegnek nem dolga az UI kezelése
+                //esetleges megoldás tovább doás vagy esemény generálás
+                // MessageBox.Show(e.StackTrace, "Nem Sikerült a banki fájlt beolvasása.");
 
 
             }
-
+            return bankLines;
 
         }
-        public void InvoiceFileReader(string invoiceFileLocation)
+        public List<string> InvoiceFileReader(string invoiceFileLocation)
         {
+            List<string> invoiceLines = new List<string>();
             try
             {
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-                StreamReader Reader = new StreamReader(invoiceFileLocation, Encoding.GetEncoding("ISO-8859-2"));//1252
-                Nyilvantartas.Clear();
-                var trash = Reader.ReadLine();
+                using StreamReader Reader = new StreamReader(invoiceFileLocation, Encoding.GetEncoding("ISO-8859-2"));//1252
+               
+                var fileHeader = Reader.ReadLine();
                 while (!Reader.EndOfStream)
                 {
-
-
                     var line = Reader.ReadLine();
-
-
-                    var sor = new BankartyaNyilvantartasok(line);
-                    Nyilvantartas.Add(sor);
-
+                    invoiceLines.Add(line);
                     line = "";
+
+
+                    ////var sor = new BankartyaNyilvantartasok(line);
+                    ////Nyilvantartas.Add(sor);
+
                 }
 
-                Reader.Close();
+               
 
 
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, "Nem Sikerült a nyilvántartás fájlt beolvasása.");
+                //Rossz megoldás A sevice rétegnek nem dolga az UI kezelése
+                //esetleges megoldás tovább doás vagy esemény generálás
+             
+               // MessageBox.Show(e.Message, "Nem Sikerült a nyilvántartás fájlt beolvasása.");
 
             }
 
-
+            return invoiceLines;
         }
 
     }

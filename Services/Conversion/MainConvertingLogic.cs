@@ -10,5 +10,7 @@ namespace GnuConvert.Services.Conversion
    public class MainConvertingLogic
     {
         FileHandler fileHandler;
+
+
     }
 }

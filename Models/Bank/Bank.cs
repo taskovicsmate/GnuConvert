@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace GnuConvert.Models.Bank
 {
-    internal class Bank
+    public class Bank
     {
+        List<Items> Items { get; set; }
+        public Bank(List<Items> items)
+        {
+            Items = items;
+        }
     }
 }
