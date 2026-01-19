@@ -118,7 +118,7 @@ namespace GnuConvert.ViewModels
             AfaKulcsok.Add(10, 18);
             AfaKulcsok.Add(11, 27);
         }
-
+         /*
         public  void FileReader()
         {
             try
@@ -190,7 +190,7 @@ namespace GnuConvert.ViewModels
 
 
         }
-
+         */
         public void Rendezes()
         {
             bool found = false;
@@ -443,6 +443,7 @@ namespace GnuConvert.ViewModels
             MessageBox.Show("A Konvertálás befejeződött. ->"+counter);
 
         }
+        /*
         public void HeaderWriter() {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             FileStream fs = null;
@@ -514,6 +515,7 @@ namespace GnuConvert.ViewModels
                     fs.Dispose();
             }
         }
+        */
         public bool szallitoKereses(string koz) {
          var bizszam = Nyilvantartas.Select(x=>x.BIZSZAM).ToList();
            koz= koz.Trim();
