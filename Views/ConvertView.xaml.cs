@@ -34,7 +34,7 @@ namespace GnuConvert.Views
                     //var ConvertModel = new ConvertViewModel();
                     var vm = (ConvertViewModel)this.DataContext;
                     vm.HistoryFileLocation = openFileDialog.FileName;
-                    vm.NyilvantartasFileReader();
+                    
                 }
 
             }
@@ -62,7 +62,7 @@ namespace GnuConvert.Views
                         //var ConvertModel = new ConvertViewModel();
                     var vm = (ConvertViewModel)this.DataContext;
                     vm.InvoiceFileLocation = openFileDialog.FileName;
-                        vm.FileReader();
+                        vm.convertingLogic.LoadData();
                     }
                 
                 }

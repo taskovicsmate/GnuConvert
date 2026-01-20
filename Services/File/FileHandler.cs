@@ -1,4 +1,5 @@
 ﻿using GnuConvert.Models.Bank;
+using GnuConvert.Models.FokonyvSzamok;
 using GnuConvert.Models.Nyilvántartás;
 using GnuConvert.Services.DataParsers;
 using System;
@@ -16,25 +17,24 @@ namespace GnuConvert.Services.File
 {
     public  class FileHandler
     {
-        List<List<string>> IrniTetelsor;
-        List<List<string>> IrniFejlecsor;
+       
         string ExceptionInvoiceFileLocation;
         string ConvertedFileLocation;
         string BankFileLocation;
         string InvoiceFileLocation;
+        string FokonyvszamokFileLocation;
         public List<string> Header = new List<string>()
         {"Verzio", "Naplo","KeltAkod", "Teljbevsor", "AfadNetto", "Fhatafa", "FmodBrt", "BizNettod", "MszAfad", "PnevBrtd", "PirszNfok", "PvarNtk", "PcimAfok", "AdoszAtk", "MegjBfok", "DnemBtk", "arfolyam", "kadomsz", "evaonyt", "okodonys", "kiegybiz","TAFADAT" };
-       public FileHandler(List<List<string>> irniTetelsor, List<List<string>> irniFejlecsor, string exceptionInvoiceFileLocation, string convertedFileLocation,string bankFileLocation,string invoiceFileLocation)
+  
+        public FileHandler(string exceptionInvoiceFileLocation, string convertedFileLocation, string bankFileLocation, string invoiceFileLocation, string fokonyvszamokFileLocation)
         {
-            IrniTetelsor = irniTetelsor;
-            IrniFejlecsor = irniFejlecsor;
-            ExceptionInvoiceFileLocation = exceptionInvoiceFileLocation;
-            ConvertedFileLocation = convertedFileLocation;
-            BankFileLocation = bankFileLocation;
+            FokonyvszamokFileLocation = fokonyvszamokFileLocation;
             InvoiceFileLocation = invoiceFileLocation;
+            BankFileLocation = bankFileLocation;
+            ConvertedFileLocation = convertedFileLocation;
+            ExceptionInvoiceFileLocation = exceptionInvoiceFileLocation;
         }
-
-        public Bank ReadBank() {
+        public Bank LoadBank() {
             if (BankFileLocation == null) {
                // MessageBox.Show("Nincs megadva bank fájl helye","Hiba");
                //hiát kell kezelni
@@ -49,7 +49,7 @@ namespace GnuConvert.Services.File
         
         }
       
-        public Invoice ReadInvoice() { 
+        public Invoice LoadInvoice() { 
          if (InvoiceFileLocation == null) {
                // MessageBox.Show("Nincs megadva a nyilvántartás fájl helye","Hiba");
                //Hiát kell kezelni
@@ -63,8 +63,22 @@ namespace GnuConvert.Services.File
             }
         
         }
+       /* public FokonyvSzamok LoadFokonyvSzamok() {
+            if (FokonyvszamokFileLocation == null) {
+               // MessageBox.Show("Nincs megadva a főkönyv számok fájl helye","Hiba");
+               //Hiát kell kezelni
+                return null;
+            }
+            else { 
+               List<string> fokonyvszamokData= new FileReader().FokonyvSzamokFileReader(FokonyvszamokFileLocation);
+               List<FokonyvSzam> fokonyvszamokItems= new ProcessFokonyvSzamokData().Parse(fokonyvszamokData);
+               FokonyvSzamok FokonyvSzamok = new FokonyvSzamok(fokonyvszamokItems);
+                return FokonyvSzamok;
+            }
 
-        public void Write()
+        }
+       */
+        public void Write(List<List<string>> IrniFejlecsor, List<List<string>> IrniTetelsor)
         {
             List<int> exeptionIndexes = new List<int>();
             List<int> convertedIndexes = new List<int>();

@@ -1,4 +1,5 @@
-﻿using GnuConvert.ViewModels;
+﻿using GnuConvert.Services.Conversion.HelpFunctionsforConversion;
+using GnuConvert.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,37 +36,17 @@ namespace GnuConvert.Helpers
         new Rule { Keyword="spectra szolg", Account="5322", Score=3 },
         };
         
-        public static string Normalize(string text)
-        {
-                if (string.IsNullOrWhiteSpace(text))
-                    return "";
 
-                text = text.ToLower();
-
-                text = text
-                    .Replace("á", "a").Replace("é", "e").Replace("í", "i")
-                    .Replace("ó", "o").Replace("ö", "o").Replace("ő", "o")
-                    .Replace("ú", "u").Replace("ü", "u").Replace("ű", "u");
-
-                char[] rem = { ';', ',', '.', ':', '(', ')', '#', '-', '/', '\'', '"' };
-                foreach (var c in rem)
-                    text = text.Replace(c, ' ');
-
-                while (text.Contains("  "))
-                    text = text.Replace("  ", " ");
-
-                return text.Trim();
-        }
         public string PredictAccount(string description)
         {
          
-            string text = Normalize(description);
+            string text = TextFormatting.Normalize(description);
 
             var scores = new Dictionary<string, int>();
 
                 foreach (var rule in Rules)
                 {
-                    if (ConvertViewModel.SzovegKereso(rule.Keyword,text,0,0))
+                    if (SearchFunctions.SzovegKereso(rule.Keyword,text,0,0))
                     {
                         if (!scores.ContainsKey(rule.Account))
                             scores[rule.Account] = 0;

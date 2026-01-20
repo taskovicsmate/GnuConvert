@@ -14,8 +14,6 @@
         <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Width="1000" Height="345" Grid.Row="4" Margin="0,400,0,0">
             <Label x:Name="label" Content="Banki fökönyvi szám" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#FF4D4335" Margin="200,0,0,10" FontFamily="Century Schoolbook" FontWeight="Bold" FontSize="14"/>
             <TextBox x:Name="textBox" Text="{Binding BankiFokonyviszam, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" TextWrapping="Wrap"  VerticalAlignment="Center" Width="132" Height="25" Margin="200,0,0,30" FontSize="14" Padding="2,2,2,2"/>
-            <RadioButton x:Name="radioButton" IsChecked="{Binding Opcio1}" Content="Vevő számlák könyvelése" Margin="200,0,0,5" HorizontalAlignment="Left"/>
-            <RadioButton x:Name="radioButton2" IsChecked="{Binding Opcio2}" Content="Szállító számlák könyvelése" Margin="200,0,0,30" HorizontalAlignment="Left"/>
 
             <Button x:Name="Fokonyvbutton" Content="Pénzügyi Nyilvántartás" HorizontalAlignment="Left" VerticalAlignment="Center" Height="40" Padding="10,1,10,1" ScrollViewer.CanContentScroll="True" Panel.ZIndex="5" FontSize="14" Click="button_Click" Style="{DynamicResource ButtonStyle2}" Background="#FF8A6240" Foreground="#FFF5F3EE" FontFamily="Century Schoolbook" Margin="200,0,0,30"/>
             <Button x:Name="KonvertalasButton" Content="Konvertálás" HorizontalAlignment="Left" VerticalAlignment="Center" Height="40" RenderTransformOrigin="0.477,0.553" Padding="10,1,10,1" FontSize="14" Click="KonvertalasButton_Click" Style="{DynamicResource ButtonStyle2}" Background="#FF8A6240" Foreground="#FFF5F3EE" FontFamily="Century Schoolbook" Margin="200,0,0,30"/>
