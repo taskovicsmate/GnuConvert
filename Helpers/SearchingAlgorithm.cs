@@ -27,7 +27,6 @@ namespace GnuConvert.Helpers
         new Rule { Keyword="szja", Account="463", Score=5 },
         new Rule { Keyword="teteldij", Account="5322", Score=5 },
         new Rule { Keyword="atvezetes", Account="3892", Score=5},
-        new Rule { Keyword="reszteljesites", Account="4541", Score=5 },
         new Rule { Keyword="szallito", Account="4541", Score=3 },
         new Rule { Keyword="konyvelesiteteldij", Account="5322", Score=5 },
         new Rule { Keyword="szamla kiegy", Account="4541", Score=5 },

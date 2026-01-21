@@ -37,12 +37,12 @@ namespace GnuConvert.Services.Settings
        
         }
         public static  AppSettingsManager SettingsReader() {
-
-            if (File.Exists(FileName))
+            
+            if (System.IO.File.Exists(FileName))
             {
                 try
                 {
-                    string json = File.ReadAllText(FileName);
+                    string json = System.IO.File.ReadAllText(FileName);
                     Instance = JsonSerializer.Deserialize<AppSettingsManager>(json);
                     if (Instance != null&& Instance.KonvertaltSzamlakHelye!=null&&Instance.KonvertaltSzamlakHelye!="" )
                     {
@@ -76,7 +76,7 @@ namespace GnuConvert.Services.Settings
             try
             {
                 var json = JsonSerializer.Serialize(Instance, new JsonSerializerOptions { WriteIndented = true });
-                File.WriteAllText(FileName, json);
+                System.IO.File.WriteAllText(FileName, json);
             }
             catch (Exception e)
             {

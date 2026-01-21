@@ -1,30 +1,13 @@
-﻿using GnuConvert.Helpers;
-using GnuConvert.Models.FokonyvSzamok;
-using GnuConvert.Services.Conversion;
-using Microsoft.ML;
-using Microsoft.ML.Data;
-using Org.BouncyCastle.Asn1.Pkcs;
-using Stripe.V2;
+﻿using GnuConvert.Services.Conversion;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.DirectoryServices.ActiveDirectory;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Documents;
-using System.Windows.Input;
-using static MaterialDesignThemes.Wpf.Theme;
 
 namespace GnuConvert.ViewModels
 {
     public class ConvertViewModel : INotifyPropertyChanged
     {
-       public MainConvertingLogic convertingLogic = new MainConvertingLogic();
-
+        public MainConvertingLogic convertingLogic;
         /*
             Teendők: 
                    
@@ -63,8 +46,13 @@ namespace GnuConvert.ViewModels
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
        
+        public void ConvertFiles()
+        {
+           convertingLogic = new MainConvertingLogic(KonvertaltSzamlakFileLocation, KivetelesKonvertaltSzamlakFileLocation, BizNettodKapcsolo,BizNettod, _bankiFokonyviszam, InvoiceFileLocation, HistoryFileLocation, FokonyvszamokFileLocation);
+           convertingLogic.LoadData();
+           convertingLogic.Rendezes();
+        }   
 
-   
         public ConvertViewModel()
         {
         

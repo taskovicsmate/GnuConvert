@@ -37,7 +37,7 @@ namespace GnuConvert.Views
                     
                 }
 
-            }
+            }  
             catch (Exception k)
             {
                 MessageBox.Show(Convert.ToString(k),"Nem található a fájl.");
@@ -62,8 +62,8 @@ namespace GnuConvert.Views
                         //var ConvertModel = new ConvertViewModel();
                     var vm = (ConvertViewModel)this.DataContext;
                     vm.InvoiceFileLocation = openFileDialog.FileName;
-                        vm.convertingLogic.LoadData();
-                    }
+                        vm.ConvertFiles();
+                }
                 
                 }
                 catch (Exception k)

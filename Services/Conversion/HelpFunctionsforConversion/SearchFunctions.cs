@@ -2,6 +2,7 @@
 using GnuConvert.Models.Nyilvántartás;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -14,11 +15,12 @@ namespace GnuConvert.Services.Conversion.HelpFunctionsforConversion
         public bool szallitoKereses(string koz,Invoice invoice)
         {
             var bizszam = invoice.invoices.Select(x => x.BIZSZAM).ToList();
-            var kozlemeny = TextFormatting.Normalize(koz);
+            
             koz= koz.Trim();
             for (int i = 0; i < bizszam.Count(); i++)
             {
-                if (bizszam[i] == kozlemeny || SzovegKereso(koz, bizszam[i], 0, 0)|| bizszam[i] == koz)
+                bizszam[i]= bizszam[i].Trim();
+                if ( SzovegKereso(koz, bizszam[i], 0, 0) || bizszam[i] == koz) 
                     return true;
             }
             return false;
@@ -88,9 +90,19 @@ namespace GnuConvert.Services.Conversion.HelpFunctionsforConversion
             var osszegekek = invoice.invoices.Select(x => x.BRUTTOSSZ).ToList();
             var datumok = invoice.invoices.Select(x => x.TELJ).ToList();
             var xdDatum = invoice.invoices.Select(x => x.UTRENDDAT).ToList();
-            nev = TextFormatting.Normalize(nev);
-            if (nev == null || nev == "" || nev == "#NÉV?")
-            {
+            
+            
+                for (int i = 0; i < nevek.Count; i++)
+                {
+                   
+                    if (nevek[i] == nev || Szovegvizsgalo(nevek[i], nev) >= 0.75 || SzovegKereso(nev, nevek[i], 0, 0))
+                    {
+
+                        if ((float.Parse(osszegekek[i], new CultureInfo("hu-HU")) - float.Parse(ar, new CultureInfo("hu-HU"))) <= 5 && (float.Parse(osszegekek[i], new CultureInfo("hu-HU")) - float.Parse(ar, new CultureInfo("hu-HU"))) >= -5 || (float.Parse(osszegekek[i], new CultureInfo("hu-HU")) - (-1 * (float.Parse(ar, new CultureInfo("hu-HU"))))) <= 5 && (float.Parse(osszegekek[i], new CultureInfo("hu-HU")) - (-1 * (float.Parse(ar, new CultureInfo("hu-HU"))))) >= -5)
+                            return true;
+                    }
+
+                }
                 for (int i = 0; i < nevek.Count; i++)
                 {
 
@@ -100,19 +112,11 @@ namespace GnuConvert.Services.Conversion.HelpFunctionsforConversion
                 }
 
 
+            if (nev == null || nev == "" || nev == "#NÉV?")
+            {
             }
             else
             {
-                for (int i = 0; i < nevek.Count; i++)
-                {
-                    if (nevek[i] == nev || Szovegvizsgalo(nevek[i], nev) >= 0.75 || SzovegKereso(nev, nevek[i], 0, 0))
-                    {
-
-                        if ((float.Parse(osszegekek[i], new CultureInfo("hu-HU")) - float.Parse(ar, new CultureInfo("hu-HU"))) <= 5 && (float.Parse(osszegekek[i], new CultureInfo("hu-HU")) - float.Parse(ar, new CultureInfo("hu-HU"))) >= -5 || (float.Parse(osszegekek[i], new CultureInfo("hu-HU")) - (-1 * (float.Parse(ar, new CultureInfo("hu-HU"))))) <= 5 && (float.Parse(osszegekek[i], new CultureInfo("hu-HU")) - (-1 * (float.Parse(ar, new CultureInfo("hu-HU"))))) >= -5)
-                            return true;
-                    }
-
-                }
             }
             return false;
         }
@@ -142,15 +146,19 @@ namespace GnuConvert.Services.Conversion.HelpFunctionsforConversion
                 for (int i = 0; i < nevek.Count; i++)
                 {
 
-                    if ((float.Parse(osszegekek[i], new CultureInfo("hu-HU")) - float.Parse(ar, new CultureInfo("hu-HU"))) <= 5 && (float.Parse(osszegekek[i], new CultureInfo("hu-HU")) - float.Parse(ar, new CultureInfo("hu-HU"))) >= -5 || (float.Parse(osszegekek[i], new CultureInfo("hu-HU")) - (-1 * (float.Parse(ar, new CultureInfo("hu-HU"))))) <= 5 && (float.Parse(osszegekek[i], new CultureInfo("hu-HU")) - (-1 * (float.Parse(ar, new CultureInfo("hu-HU"))))) >= -5)
+                    if ((float.Parse(osszegekek[i], new CultureInfo("hu-HU")) - float.Parse(ar, new CultureInfo("hu-HU"))) <= 5 && (float.Parse(osszegekek[i], new CultureInfo("hu-HU")) - float.Parse(ar, new CultureInfo("hu-HU"))) >= -5 || (float.Parse(osszegekek[i], new CultureInfo("hu-HU")) - (-1 * (float.Parse(ar, new CultureInfo("hu-HU"))))) <= 5 && (float.Parse(osszegekek[i], new CultureInfo("hu-HU")) - (-1 * (float.Parse(ar, new CultureInfo("hu-HU"))))) >= -5) { 
                         if (xdDatum[i] == datum || datumok[i] == datum || datumok[i] == $"{Date[0]}.{Date[1]}.{int.Parse(Date[2]) - 1}" || datumok[i] == $"{Date[0]}.{Date[1]}.{int.Parse(Date[2]) + 1}")
                         {
                             Eredmeny.Add(VSZFSZ[i]);
                             Eredmeny.Add(BIZSZAM[i]);
                             Eredmeny.Add(FIZMOD[i]);
                             Eredmeny.Add(PARTNEV[i]);
+                            System.Diagnostics.Debug.WriteLine("Sikerült adatot gyüjteni");
                             return Eredmeny;
                         }
+                         System.Diagnostics.Debug.WriteLine("Dátum eltérés miatt nem tudott adatot gyüjteni");
+                    }
+                   // System.Diagnostics.Debug.WriteLine("Összeg eltérés miatt nem tudott adatot gyüjteni");
                 }
 
 
@@ -166,25 +174,30 @@ namespace GnuConvert.Services.Conversion.HelpFunctionsforConversion
                         Eredmeny.Add(BIZSZAM[i]);
                         Eredmeny.Add(FIZMOD[i]);
                         Eredmeny.Add(PARTNEV[i]);
+                        System.Diagnostics.Debug.WriteLine("Sikerült adatot gyüjteni");
                         return Eredmeny;
                     }
                     if (osszegekek[i] == ar || (float.Parse(osszegekek[i], new CultureInfo("hu-HU")) - float.Parse(ar, new CultureInfo("hu-HU"))) <= 5 && (float.Parse(osszegekek[i], new CultureInfo("hu-HU")) - float.Parse(ar, new CultureInfo("hu-HU"))) >= -5)
                     {
                         nev = TextFormatting.Normalize(nev);
                         string nyNev = TextFormatting.Normalize(nevek[i]);
-                        if (nevek[i] == nev || Szovegvizsgalo(nevek[i], nev) >= 0.75 || SzovegKereso(nev, nevek[i], 0, 0) || nev == nyNev)
-                        {
-                            if (xdDatum[i] == datum || datumok[i] == datum || datumok[i] == $"{Date[0]}.{Date[1]}.{int.Parse(Date[2]) - 1}" || datumok[i] == $"{Date[0]}.{Date[1]}.{int.Parse(Date[2]) + 1}")
+                       
+                            if (xdDatum[i] == datum || datumok[i] == datum || datumok[i] == $"{Date[0]}.{Date[1]}.{int.Parse(Date[2]) - 1}" || datumok[i] == $"{Date[0]}.{Date[1]}.{int.Parse(Date[2]) + 1}"|| nevek[i] == nev || Szovegvizsgalo(nevek[i], nev) >= 0.75 || SzovegKereso(nev, nevek[i], 0, 0) || nev == nyNev)
                             {
 
                                 Eredmeny.Add(VSZFSZ[i]);
                                 Eredmeny.Add(BIZSZAM[i]);
                                 Eredmeny.Add(FIZMOD[i]);
                                 Eredmeny.Add(PARTNEV[i]);
+                                System.Diagnostics.Debug.WriteLine("Sikerült adatot gyüjteni");
+                                return Eredmeny;
                             }
+                            System.Diagnostics.Debug.WriteLine("Dátum eltérés miatt nem tudott adatot gyüjteni");
 
-                        }
+                        
+                      
                     }
+                   // System.Diagnostics.Debug.WriteLine("Összeg eltérés miatt nem tudott adatot gyüjteni");
                 }
             }
             return Eredmeny;

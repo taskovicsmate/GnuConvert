@@ -7,7 +7,7 @@
     <Application.Resources>
         <vm:KonyveloknekSettingsViewModel x:Key="FokonyvVM"/>
         
-        <vm:ConvertViewModel x:Key="ConvertVM"/>
+       <vm:ConvertViewModel x:Key="ConvertVM"/>
 
         <DataTemplate DataType="{x:Type vm:ConvertViewModel}">
             <v:ConvertView />
