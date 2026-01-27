@@ -1,11 +1,13 @@
-﻿using System;
+﻿using ExcelDataReader;
+using GnuConvert.Models.FokonyvSzamok;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-namespace GnuConvert.Services.File
+namespace GnuConvert.Services.IO
 {
     public class FileReader
     {
@@ -27,9 +29,6 @@ namespace GnuConvert.Services.File
                     bankLines.Add(line);
                     line = "";
 
-                    //var sor = new Adatok(line);
-                    //Adat.Add(sor);
-
                 }
 
             
@@ -48,6 +47,7 @@ namespace GnuConvert.Services.File
         }
         public List<string> InvoiceFileReader(string invoiceFileLocation)
         {
+        
             List<string> invoiceLines = new List<string>();
             try
             {
@@ -61,10 +61,6 @@ namespace GnuConvert.Services.File
                     var line = Reader.ReadLine();
                     invoiceLines.Add(line);
                     line = "";
-
-
-                    ////var sor = new BankartyaNyilvantartasok(line);
-                    ////Nyilvantartas.Add(sor);
 
                 }
 
@@ -83,6 +79,10 @@ namespace GnuConvert.Services.File
 
             return invoiceLines;
         }
-
+        //public List<Rule> RuleFileReader(string rulefilelocation) { 
+        
+        //}
+        
+     
     }
 }

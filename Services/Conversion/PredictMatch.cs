@@ -14,7 +14,7 @@ namespace GnuConvert.Services.Conversion
         {
            string accountNumber = "";
 
-            var Predictor = new FokonyvMegmondo();
+           
             SearchingAlgorithm sc = new SearchingAlgorithm();
             accountNumber = sc.PredictAccount(kozlemeny + partnerNev);
 
