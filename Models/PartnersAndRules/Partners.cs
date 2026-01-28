@@ -12,6 +12,11 @@ namespace GnuConvert.Models.PartnersAndRules
         public Partners() {
                 partners = new List<Partner>();
         }
+        public Partners(Partner p)
+        {
+            partners = new List<Partner>();
+            partners.Add(p);
+        }
         public Partners(List<Partner> p)
         {
             partners = p;

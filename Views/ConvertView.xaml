@@ -8,18 +8,32 @@
              Height="auto" Width="Auto"
                DataContext="{StaticResource ConvertVM}">
     <Grid Background="#FFF5F3EE" Width="auto" MinWidth="1000" MinHeight="1000">
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,200,0,100">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,100">
             <TextBlock Text="Ez a felület a bank könyvelést fogja segíteni!" FontSize="26" FontWeight="Bold" Margin="0,0,0,20" Foreground="#FF4D4335" />
             <TextBlock Text="Röviden és egyszerűen megmutatj a program működését." 
                FontSize="16" TextAlignment="Center" Margin="0,0,0,30" Foreground="#FF4D4335" />
             <TextBlock Text=""/>
         </StackPanel>
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Width="1000" Height="345" Grid.Row="4" Margin="0,400,0,0">
-            <Label x:Name="label" Content="Banki fökönyvi szám" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#FF4D4335" Margin="200,0,0,10" FontFamily="Century Schoolbook" FontWeight="Bold" FontSize="14"/>
-            <TextBox x:Name="textBox" Text="{Binding BankiFokonyviszam, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" TextWrapping="Wrap"  VerticalAlignment="Center" Width="132" Height="25" Margin="200,0,0,30" FontSize="14" Padding="2,2,2,2"/>
+        <StackPanel VerticalAlignment="Top">
+            <Grid Width="940" HorizontalAlignment="Left" Margin="150,150,0,0" >
+                <Label x:Name="label1" Content="Válasszon egy partnert:" HorizontalAlignment="Left" Panel.ZIndex="5" SnapsToDevicePixels="True" Margin="338,10,0,3" AllowDrop="True"/>
+                <ComboBox ItemsSource="{Binding Partners}" SelectedItem="{Binding SelectedPartner}"  DisplayMemberPath="DisplayName" MinWidth="250" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="491,0,0,0"/>
+                <Button x:Name="PartnerButton" Command="{Binding ShowAddPartnerCommand}" Content="Partner hozzáadása" Padding="10,1,10,1" ScrollViewer.CanContentScroll="True" Panel.ZIndex="5" FontSize="12" Style="{DynamicResource ButtonStyle2}" Background="#FF8A6240" Foreground="#FFF5F3EE" FontFamily="Century Schoolbook" Margin="161,20,0,14" HorizontalAlignment="Left"/>
+            </Grid>
+        </StackPanel>
+        <StackPanel Orientation="Vertical" Grid.Row="4" Margin="0,200,0,0" MinWidth="1000" MinHeight="1000" >
+            <Grid>
 
-            <Button x:Name="Fokonyvbutton" Content="Pénzügyi Nyilvántartás" HorizontalAlignment="Left" VerticalAlignment="Center" Height="40" Padding="10,1,10,1" ScrollViewer.CanContentScroll="True" Panel.ZIndex="5" FontSize="14" Click="button_Click" Style="{DynamicResource ButtonStyle2}" Background="#FF8A6240" Foreground="#FFF5F3EE" FontFamily="Century Schoolbook" Margin="200,0,0,30"/>
-            <Button x:Name="KonvertalasButton" Content="Konvertálás" HorizontalAlignment="Left" VerticalAlignment="Center" Height="40" RenderTransformOrigin="0.477,0.553" Padding="10,1,10,1" FontSize="14" Click="KonvertalasButton_Click" Style="{DynamicResource ButtonStyle2}" Background="#FF8A6240" Foreground="#FFF5F3EE" FontFamily="Century Schoolbook" Margin="200,0,0,30"/>
+                <ContentControl Content="{Binding CurrentSubView}"
+                    VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" Panel.ZIndex="7" DockPanel.Dock="Top" HorizontalAlignment="Center" />
+               
+                <Label x:Name="label" Content="Banki fökönyvi szám" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FF4D4335" Margin="185,10,0,0" FontFamily="Century Schoolbook" FontWeight="Bold" FontSize="14" Height="27" Width="162"/>
+                <TextBox x:Name="textBox" Text="{Binding BankiFokonyviszam, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" TextWrapping="Wrap"  VerticalAlignment="Top" Width="132" Height="25" Margin="0,12,0,0" FontSize="14" Padding="2,2,2,2"/>
+
+                <Button x:Name="Fokonyvbutton" Content="Pénzügyi Nyilvántartás" HorizontalAlignment="Left" VerticalAlignment="Top" Height="40" Padding="10,1,10,1" ScrollViewer.CanContentScroll="True" Panel.ZIndex="0" FontSize="14" Click="button_Click" Style="{DynamicResource ButtonStyle2}" Background="#FF8A6240" Foreground="#FFF5F3EE" FontFamily="Century Schoolbook" Margin="171,74,0,0" Width="176"/>
+                <Button x:Name="KonvertalasButton" Content="Konvertálás" HorizontalAlignment="Left" VerticalAlignment="Top" Height="40" RenderTransformOrigin="0.477,0.553" Padding="10,1,10,1" FontSize="14" Click="KonvertalasButton_Click" Style="{DynamicResource ButtonStyle2}" Background="#FF8A6240" Foreground="#FFF5F3EE" FontFamily="Century Schoolbook" Margin="209,145,0,0" Width="101"/>
+
+            </Grid>
 
         </StackPanel>
     </Grid>

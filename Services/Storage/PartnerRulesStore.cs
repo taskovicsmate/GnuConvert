@@ -84,7 +84,56 @@ namespace GnuConvert.Services.Storage
                 File.Move(tmp, path);
         }
 
+        public IReadOnlyList<Partner> LoadAll()
+        {
+            Directory.CreateDirectory(AppPaths.PartnersRoot);
 
-      
+            if (!File.Exists(AppPaths.PartnersRegistryFile))
+            {
+                // ha nincs, hozzuk létre üresen
+                JsonFileStore.SaveAtomic(AppPaths.PartnersRegistryFile, new List<Partners>());
+                return new List<Partner>();
+            }
+
+            try
+            {
+                var partners = JsonFileStore.Load<List<Partner>>(AppPaths.PartnersRegistryFile);
+                return partners;
+                  
+            }
+            catch
+            {
+                // ha sérült a registry, akkor újra létrehozzuk (nem dől össze az app)
+                JsonFileStore.SaveAtomic(AppPaths.PartnersRegistryFile, new List<Partners>());
+                return new List<Partner>();
+            }
+        }
+        public void AddPartner(string partnerId, string displayName)
+        {
+            if (string.IsNullOrWhiteSpace(partnerId))
+                throw new ArgumentException("partnerId is required.", nameof(partnerId));
+            if (string.IsNullOrWhiteSpace(displayName))
+                throw new ArgumentException("displayName is required.", nameof(displayName));
+
+            var partners = LoadAll().ToList();
+
+            if (partners.Any(p => p.Id == partnerId))
+                throw new InvalidOperationException($"Partner with id '{partnerId}' already exists.");
+
+            partners.Add(new Partner(partnerId, displayName));
+
+            JsonFileStore.SaveAtomic(AppPaths.PartnersRegistryFile, partners);
+
+            // a rules.json-t nem itt csináljuk, azt majd a PartnerStore hozza létre LoadOrCreateDefault-tal
+        }
+        public void RemovePartner(string partnerId)
+        {
+            var partners = LoadAll().ToList();
+            var removed = partners.RemoveAll(p => p.Id == partnerId) > 0;
+
+            if (removed)
+                JsonFileStore.SaveAtomic(AppPaths.PartnersRegistryFile, partners);
+        }
+
     }
 }

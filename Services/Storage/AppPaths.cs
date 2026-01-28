@@ -23,7 +23,8 @@ namespace GnuConvert.Services.Storage
 
         public static string PartnerDir(string partnerId) =>
             Path.Combine(PartnersRoot, partnerId);
-
+        public static string PartnersRegistryFile =>
+              Path.Combine(PartnersRoot, "partners.json");
         public static string PartnerRulesFile(string partnerId) =>
             Path.Combine(PartnerDir(partnerId), "rules.json");
     }

@@ -2,6 +2,7 @@
 using GnuConvert.Models.Bank;
 using GnuConvert.Models.FokonyvSzamok;
 using GnuConvert.Models.Nyilvántartás;
+using GnuConvert.Models.PartnersAndRules;
 using GnuConvert.Services.Conversion.HelpFunctionsforConversion;
 using GnuConvert.Services.IO;
 using System;
@@ -24,6 +25,7 @@ namespace GnuConvert.Services.Conversion
         InDirectMatch _inDirectMatch = new InDirectMatch();
         PredictMatch _predictMatch = new PredictMatch();
         FokonyvSzamok Fokonyv = new FokonyvSzamok();
+        Partner _partner ;
 
         private string _convertedBankFileLocation;
         private string _exceptionBankFileLocation;
@@ -43,7 +45,7 @@ namespace GnuConvert.Services.Conversion
 
         };
 
-        public MainConvertingLogic( string bizNettodKapcsolo, string bizNettod, string bankiFokonyviSzam, string bankFileLocation, string invoiceFileLocation)
+        public MainConvertingLogic( string bizNettodKapcsolo, string bizNettod, string bankiFokonyviSzam, string bankFileLocation, string invoiceFileLocation,Partner p)
         {
 
             _convertedBankFileLocation = App.Settings.KonvertaltSzamlakHelye+ @"\\KonvertaltSzamlak.csv"
@@ -68,7 +70,7 @@ namespace GnuConvert.Services.Conversion
 
             _bank = new Bank();
             _invoice = new Invoice();
-
+            _partner = p;
             _fileHandler = new FileHandler(_exceptionBankFileLocation, _convertedBankFileLocation, _bankFileLocation, _invoiceFileLocation);
         }
         public MainConvertingLogic()
