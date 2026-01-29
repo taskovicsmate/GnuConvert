@@ -33,7 +33,18 @@ namespace GnuConvert.ViewModels
         private readonly SettingsStore _settingsStore;
         private readonly PartnerRulesStore _rulesStore;
         Partner partner;
+
+
         private Partner? _selectedPartner;
+        public ConvertViewModel()
+        {
+
+            ShowAddPartnerCommand = new RelayCommand(() => CurrentSubView = new AddPartnerViewModel(() => CloseSubView()));
+            _settingsStore = App.SettingsStore;
+            _rulesStore = App.PartnerRulesStore;
+            LoadPartners();
+
+        }
         public Partner? SelectedPartner
         {
             get => _selectedPartner;
@@ -72,7 +83,7 @@ namespace GnuConvert.ViewModels
             get => _currentSubView;
             set { _currentSubView = value; OnPropertyChanged(nameof(CurrentSubView)); }
         }
-
+        public void CloseSubView() => CurrentSubView = null;
         public ICommand ShowAddPartnerCommand { get; }
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string name)
@@ -86,15 +97,6 @@ namespace GnuConvert.ViewModels
            convertingLogic.Rendezes();
         }   
 
-        public ConvertViewModel()
-        {
-
-            ShowAddPartnerCommand = new RelayCommand(() => CurrentSubView = new AddPartnerViewModel());
-            _settingsStore = App.SettingsStore;
-            _rulesStore = App.PartnerRulesStore;
-            LoadPartners();
-
-        }
         public void LoadPartners()
         {
             Partners.Clear();

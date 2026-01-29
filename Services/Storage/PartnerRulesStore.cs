@@ -73,7 +73,7 @@ namespace GnuConvert.Services.Storage
             File.WriteAllText(tmp, json);
 
             // 2) Validate temp
-            var roundTrip = JsonSerializer.Deserialize<Partner>(File.ReadAllText(tmp), _jsonOptions);
+            var roundTrip = JsonSerializer.Deserialize<List<Rule>>(File.ReadAllText(tmp), _jsonOptions);
             if (roundTrip == null)
                 throw new InvalidOperationException("Failed to validate partner rules JSON before replacing.");
 
@@ -84,7 +84,7 @@ namespace GnuConvert.Services.Storage
                 File.Move(tmp, path);
         }
 
-        public IReadOnlyList<Partner> LoadAll()
+        public List<Partner> LoadAll()
         {
             Directory.CreateDirectory(AppPaths.PartnersRoot);
 

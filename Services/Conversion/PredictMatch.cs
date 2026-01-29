@@ -15,8 +15,8 @@ namespace GnuConvert.Services.Conversion
            string accountNumber = "";
 
            
-            SearchingAlgorithm sc = new SearchingAlgorithm();
-            accountNumber = sc.PredictAccount(kozlemeny + partnerNev);
+            //SearchingAlgorithm sc = new SearchingAlgorithm();
+            //accountNumber = sc.PredictAccount(kozlemeny + partnerNev);
 
             return accountNumber;
         }

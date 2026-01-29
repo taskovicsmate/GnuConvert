@@ -16,7 +16,7 @@ namespace GnuConvert.Services.IO
             List<string> bankLines = new List<string>();
             try
             {
-                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+              
 
                using StreamReader Reader = new StreamReader(bankFileLocation, Encoding.GetEncoding("ISO-8859-2"));//1252
                
@@ -51,7 +51,6 @@ namespace GnuConvert.Services.IO
             List<string> invoiceLines = new List<string>();
             try
             {
-                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
                 using StreamReader Reader = new StreamReader(invoiceFileLocation, Encoding.GetEncoding("ISO-8859-2"));//1252
                

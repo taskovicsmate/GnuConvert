@@ -61,20 +61,7 @@ namespace GnuConvert.Services.IO
             }
         
         }
-        //public FokonyvSzamok LoadFokonyvSzamok() {
-        //    if (FokonyvszamokFileLocation == null) {
-        //       // MessageBox.Show("Nincs megadva a főkönyv számok fájl helye","Hiba");
-        //       //Hiát kell kezelni
-        //        return null;
-        //    }
-        //    else { 
-        //       List<string> fokonyvszamokData= new FileReader().FokonyvSzamokFileReader(FokonyvszamokFileLocation);
-        //       List<FokonyvSzam> fokonyvszamokItems= new ProcessFokonyvSzamokData().Parse(fokonyvszamokData);
-        //       FokonyvSzamok FokonyvSzamok = new FokonyvSzamok(fokonyvszamokItems);
-        //        return FokonyvSzamok;
-        //    }
-
-        //}
+       
        
         public void Write(List<List<string>> IrniFejlecsor, List<List<string>> IrniTetelsor)
         {

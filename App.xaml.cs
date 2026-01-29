@@ -1,4 +1,5 @@
-﻿using GnuConvert.Services.Settings;
+﻿using GnuConvert.Models.PartnersAndRules;
+using GnuConvert.Services.Settings;
 using GnuConvert.Services.Storage;
 using System.Configuration;
 using System.Data;
@@ -12,6 +13,7 @@ namespace GnuConvert
     /// </summary>
     public partial class App : Application
     {
+        public static Partners Partners { get; private set; } = new Partners();
         public static SettingsStore SettingsStore { get; private set; } = null!;
         public static PartnerRulesStore PartnerRulesStore { get; private set; } = null!;
         public static AppSettings Settings { get; private set; } = null!;
