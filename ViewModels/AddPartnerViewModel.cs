@@ -1,10 +1,12 @@
 ﻿using GnuConvert.Models.PartnersAndRules;
+using GnuConvert.Services.Conversion.HelpFunctionsforConversion;
 using GnuConvert.Services.GlAssignmentService;
 using GnuConvert.Services.Settings;
 using GnuConvert.Services.Storage;
 using GnuConvert.ViewModels;
 using NPOI.SS.Formula.Functions;
 using Org.BouncyCastle.Utilities.Collections;
+using Stripe;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -21,9 +23,12 @@ namespace GnuConvert.ViewModels
         private bool _isBankFilechosen;
         private bool _isInvoiceFilechosen;
         private string _PartnerName;
+        List<Partner> ExistingPartners;
+
+        private bool _isBulkUpdating;
         public  ObservableCollection<PartnerRuleRowViewModel> Rows { get;  } = new();
         public List<PartnerRuleRowViewModel> RowsTemp { get; set; } = new();
-        string NewPartnerId = $"{App.PartnerRulesStore.LoadAll().Count + 1}";
+        string NewPartnerId;
         private PartnerRuleRowViewModel? _selectedRow;
 
         public string SelectedBankPath
@@ -41,6 +46,13 @@ namespace GnuConvert.ViewModels
         {
             get => _PartnerName;
             set {
+                foreach (var partner in ExistingPartners)
+                {
+                    if (_PartnerName == partner.Name)
+                    {
+                        //Hiba megegyező nevű partner miatt
+                    }
+                }
                 if (_PartnerName != value && value != null)
                 {
                     _PartnerName = value; OnPropertyChanged();
@@ -71,6 +83,8 @@ namespace GnuConvert.ViewModels
   
         public ICommand SelectInvoiceFileCommand { get; }
         public ICommand RuleMakerCommand { get; }
+        public ICommand CancelPartnerCreationCommand { get; }
+        public ICommand SaveAndCloseCommand { get; }
 
 
         public PartnerRuleRowViewModel? SelectedRow
@@ -80,26 +94,37 @@ namespace GnuConvert.ViewModels
         }
 
         private readonly Action _close;
-        public ICommand SaveAndCloseCommand { get; }
-        public AddPartnerViewModel(Action close)
+        private readonly Action _load;
+        public AddPartnerViewModel(Action onSaved,Action onClose,List<Partner> partners)
         {
-            _close = close;
+            ExistingPartners = partners;
+            _close = onClose;
+            _load = onSaved;
             // assigmentCore = new GlAssigmentCore(SelectedBankPath,SelectInvoiceFilePath,NewPartnerId);
             Rows.Add(new PartnerRuleRowViewModel("Példa","BANKKOLTSEG", "245","5322"));
             SelectBankFileCommand = new RelayCommand(SelectBankFile);
             SelectInvoiceFileCommand = new RelayCommand(SelectInvoiceFile);
             RuleMakerCommand = new RelayCommand(MakePartner);
+            CancelPartnerCreationCommand = new RelayCommand(CancelPartnerCreation);
 
 
         }
+        public void CancelPartnerCreation()
+        {
+            _close();
+        }
         private void MakePartner() {
+
+          
             if (IsBankFileChosen && IsInvoiceFilechosen && PartnerName != null && PartnerName != "")
             {
+                NewPartnerId = TextFormatting.Normalize(PartnerName);
                 List<Rule> rules = new List<Rule>();
                 rules = ruleMaker.GetRules(RowsTemp);
                 Partner partner = new Partner(PartnerName,NewPartnerId,rules);
                 App.PartnerRulesStore.Save(partner);
                 App.PartnerRulesStore.AddPartner(partner.Name, partner.Id);
+                _load();
                 _close();
             }
             else { 
@@ -107,6 +132,35 @@ namespace GnuConvert.ViewModels
             }
                 
         }
+        private void RowOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (_isBulkUpdating) return;
+            var sourceRow = (PartnerRuleRowViewModel)sender!;
+            var ledger = sourceRow.UserLedger?.Trim() ?? "";
+            var key = sourceRow.Kozlemeny?.Trim() ?? "";
+            var key3 = TextFormatting.Normalize(sourceRow.Kozlemeny) ?? "";
+            _isBulkUpdating = true;
+            try
+            {
+                foreach (var row in Rows)
+                {
+                    if (ReferenceEquals(row, sourceRow)) continue;
+
+                    if (string.Equals(row.Kozlemeny?.Trim(), key, StringComparison.Ordinal)&&(SearchFunctions.SzovegKereso("atvezetes",key3,0,0)
+                        || SearchFunctions.SzovegKereso("munkaber", key3, 0, 0)))
+                    {
+                        row.setUserLedger(ledger);
+                    }
+                }
+            }
+            finally
+            {
+                _isBulkUpdating = false;
+            }
+           
+ }
+            
+
         private void SelectBankFile()
         {
             try
@@ -140,6 +194,7 @@ namespace GnuConvert.ViewModels
             foreach (var row in RowsTemp)
             {
                 Rows.Add(row);
+                row.PropertyChanged += RowOnPropertyChanged;
             }
         }
         private void SelectInvoiceFile()

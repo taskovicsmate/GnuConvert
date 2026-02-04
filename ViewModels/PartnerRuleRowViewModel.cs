@@ -28,7 +28,10 @@ namespace GnuConvert.ViewModels
                 OnPropertyChanged();
             }
         }
-
+        public void setUserLedger(string fokonyv)
+        {
+            UserLedger = fokonyv;
+        }
         public PartnerRuleRowViewModel(string partner ,string koz,string pri)
         {
             

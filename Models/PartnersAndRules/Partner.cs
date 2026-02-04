@@ -14,8 +14,8 @@ namespace GnuConvert.Models.PartnersAndRules
         public string Id { get; set; } = "";
         public List<Rule> Rules { get; set; } = new List<Rule>();
 
-        public Partner(string n, string i,List<Rule> r) { 
-                Name = n; Id = i; Rules = r;
+        public Partner(string name, string id,List<Rule> rules) { 
+                Name = name; Id = id; Rules = rules;
         
         }
         [JsonConstructor]

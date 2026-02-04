@@ -1,9 +1,9 @@
-﻿using GnuConvert.Helpers;
-using GnuConvert.Models.Bank;
+﻿using GnuConvert.Models.Bank;
 using GnuConvert.Models.FokonyvSzamok;
 using GnuConvert.Models.Nyilvántartás;
 using GnuConvert.Models.PartnersAndRules;
 using GnuConvert.Services.Conversion.HelpFunctionsforConversion;
+using GnuConvert.Services.GlAssignmentService;
 using GnuConvert.Services.IO;
 using System;
 using System.Collections.Generic;
@@ -24,7 +24,7 @@ namespace GnuConvert.Services.Conversion
         DirectMatch _directMatch = new DirectMatch();
         InDirectMatch _inDirectMatch = new InDirectMatch();
         PredictMatch _predictMatch = new PredictMatch();
-        FokonyvSzamok Fokonyv = new FokonyvSzamok();
+       GlAssigmentCore _gblAssignmentCore;
         Partner _partner ;
 
         private string _convertedBankFileLocation;
@@ -139,7 +139,7 @@ namespace GnuConvert.Services.Conversion
                 if (!found)
                 {
                     //3. ha még mindig nincs egyezés akkor történik a fokonyvszám megjósolása mert akkor az nem egy szállító tétel.
-                    predictedFokonyviSzam = _predictMatch.PredictSearch(Kozlemenyek[i], partnerNevek[i]);
+                    predictedFokonyviSzam = _predictMatch.PredictSearch(Kozlemenyek[i], partnerNevek[i],_partner);
 
                 }
                 if (predictedFokonyviSzam == null && !found)

@@ -15,23 +15,26 @@
 
             <!-- FELSŐ RÉSZ: minden vezérlő -->
             <StackPanel Grid.Row="0" Margin="10">
-                <TextBlock FontSize="26" FontWeight="Bold" Foreground="#FF4D4335"><Run Text="Új partner hozzáadása"/><Run Language="hu-hu" Text=" és betanítása"/><LineBreak/><Run Language="hu-hu"/></TextBlock>
-                <TextBlock FontSize="16" Foreground="#FF4D4335" Margin="0,8,0,0">
+                <TextBlock FontSize="26" Foreground="#FF4D4335" FontFamily="Century Schoolbook" FontWeight="Bold"><Run Text="Új partner hozzáadása"/><Run Language="hu-hu" Text=" és betanítása"/><LineBreak/><Run Language="hu-hu"/></TextBlock>
+                <TextBlock FontSize="16" Foreground="#FF4D4335" Margin="0,8,0,0" FontFamily="Century Schoolbook">
                     Adja meg a partner nevét és a tételelkhez tartozó főkönyvi számot.
                 </TextBlock>
-
                 <Grid Margin="0,16,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="321*"/>
+                        <ColumnDefinition Width="365*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Label Content="Partner neve:" FontSize="14" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Text="{Binding PartnerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="14" Padding="2"/>
+                    <Button Command="{Binding CancelPartnerCreationCommand}" Content="Vissza" FontSize="14"  Style="{DynamicResource ButtonStyle1}" Background="#FF8A6240" Foreground="#FFF5F3EE" FontFamily="Century Schoolbook" Padding="3,3,3,3" Grid.Column="3" Margin="234,-91,29,91" />
+
+                    <Label Content="Partner neve:" FontSize="14" VerticalAlignment="Center" FontFamily="Century Schoolbook"/>
+                    <TextBox Text="{Binding PartnerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="14" Padding="2" Grid.ColumnSpan="2" Margin="90,0,0,0" FontFamily="Century Schoolbook"/>
                 </Grid>
 
                 <TextBlock Text="Válassza ki a partneréhez tartozó megfelelő fájlokat."
-                           FontSize="14" Margin="0,12,0,0"/>
+                           FontSize="14" Margin="0,12,0,0" FontFamily="Century Schoolbook"/>
 
                 <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
                     <Button Command="{Binding SelectInvoiceFileCommand}" Content="Nyilvántartás kiválasztása" FontSize="14"  Style="{DynamicResource ButtonStyle1}" Background="#FF8A6240" Foreground="#FFF5F3EE" FontFamily="Century Schoolbook" Padding="3,3,3,3" />
@@ -46,7 +49,8 @@
                 </StackPanel>
 
                 <TextBlock Text="Minden tételhez írja mellé az ön által eddig használt főkönyvi számot."
-                           FontSize="14" Margin="0,12,0,0"/>
+                           FontSize="14" Margin="0,12,0,0" FontWeight="Bold" FontFamily="Century Schoolbook"/>
+                <Label Content="Az esetlegesen előforduló szállító és vevő tételekhez nem kell kitöltenie a fökönyvi szám mezőt mert azt a program nem fogja figyelembe venni!" FontSize="14" FontWeight="Bold" Padding="0,0,0,0"/>
             </StackPanel>
 
             <!-- KÖZÉP: DATAGRID kapja a maradékot => belső scroll működik -->
@@ -75,7 +79,7 @@
                     HorizontalAlignment="Right"
                     Margin="0,181,36,43"
                     Style="{DynamicResource ButtonStyle2}"
-                    FontSize="14"  Background="#FF8A6240" Foreground="#FFF5F3EE" FontFamily="Century Schoolbook" Padding="3,3,3,3" />
+                    FontSize="14"  Background="#FF8A6240" Foreground="#FFF5F3EE" FontFamily="Century Schoolbook" Padding="5,5,5,5" VerticalAlignment="Bottom" Grid.IsSharedSizeScope="True" />
         </Grid>
     </Border>
 </UserControl>

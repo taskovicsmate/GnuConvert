@@ -17,7 +17,7 @@ namespace GnuConvert.Services.Storage
             WriteIndented = true
         };
 
-        public Partner LoadOrCreateDefault(string partnerid)
+        public Partner LoadOrCreateDefault(string partnerName,string partnerid)
         {
             if (string.IsNullOrWhiteSpace(partnerid))
                 throw new ArgumentException("partnerId cannot be null or empty.", nameof(partnerid));
@@ -34,9 +34,9 @@ namespace GnuConvert.Services.Storage
                 try
                 {
                     var json = File.ReadAllText(rulesFile);
-                    var loaded = JsonSerializer.Deserialize<Partner>(json, _jsonOptions);
+                    var loaded = JsonSerializer.Deserialize<List<Rule>>(json, _jsonOptions);
                     if (loaded != null)
-                        return loaded;
+                        return new Partner(partnerName,partnerid,loaded);
                 }
                 catch 
                 {
@@ -128,9 +128,19 @@ namespace GnuConvert.Services.Storage
         }
         public void RemovePartner(string partnerId)
         {
+            var dir = AppPaths.PartnerDir(partnerId);
+            if (!Directory.Exists(dir))
+                return;
             var partners = LoadAll().ToList();
             var removed = partners.RemoveAll(p => p.Id == partnerId) > 0;
+            // Safety: csak a PartnersRoot alatt törölhetünk
+            var fullDir = Path.GetFullPath(dir).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+            var fullRoot = Path.GetFullPath(AppPaths.PartnersRoot).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
 
+            if (!fullDir.StartsWith(fullRoot, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("Refusing to delete directory outside PartnersRoot.");
+
+            Directory.Delete(fullDir, recursive: true);
             if (removed)
                 JsonFileStore.SaveAtomic(AppPaths.PartnersRegistryFile, partners);
         }

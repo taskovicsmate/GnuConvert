@@ -26,7 +26,6 @@ namespace GnuConvert.Services.GlAssignmentService
         Invoice _invoiceTMP = new Invoice();
         DirectMatch _directMatch = new DirectMatch();
         InDirectMatch _inDirectMatch = new InDirectMatch();
-        PredictMatch _predictMatch = new PredictMatch();
 
         public string BankFileLocation;
         public string InvoiceFileLocation;
@@ -94,8 +93,12 @@ namespace GnuConvert.Services.GlAssignmentService
                 if (!found)
                 {
                     //3. ha még mindig nincs egyezés akkor történik a fokonyvszám megjósolása mert akkor az nem egy szállító tétel.
-                   var aRule= new PartnerRuleRowViewModel(partnerNevek[i], Kozlemenyek[i], Osszegek[i]);
-                     partnerRules.Add(aRule);
+                    if (ScoreCounting(Kozlemenyek[i]) <5 || (Kozlemenyek[i] == "" || Kozlemenyek[i] == null) && ScoreCounting(partnerNevek[i])<5)  { 
+                        var aRule= new PartnerRuleRowViewModel(partnerNevek[i], Kozlemenyek[i], Osszegek[i]);
+                         partnerRules.Add(aRule);
+                    
+                    }
+
                    
 
                 }
@@ -116,13 +119,30 @@ namespace GnuConvert.Services.GlAssignmentService
             List<Rule> rules = new List<Rule>();
             foreach (var item in RuleData)
             {
+                Rule rule;
+
+
+                if ( item.UserLedger == null ||item.UserLedger.Length>=3 && item.UserLedger[0]=='4'&& item.UserLedger[1] == '5'&& item.UserLedger[2] == '4'|| item.UserLedger=="")
+                    continue;
+
                 string kozlemeny = TextFormatting.Normalize(item.Kozlemeny);
-                var rule = new Rule(kozlemeny,item.UserLedger,ScoreCounting(item.Kozlemeny));
+                string partnernName = TextFormatting.Normalize(item.PartnerName);
+                if (kozlemeny == "" || kozlemeny == null)
+                {
+                    rule = new Rule(partnernName, item.UserLedger, ScoreCounting(item.Kozlemeny));
+
+                }
+                else { 
+                     rule = new Rule(kozlemeny, item.UserLedger, ScoreCounting(item.Kozlemeny));
+                
+                }
                
                 rules.Add(rule);
             }
-            return rules;
+            var unique = rules.GroupBy(r => (r.Keyword, r.Account)).Select(g => g.First()).ToList();
+            return unique ;
         }
+       
         public int ScoreCounting(string kozlemeny) {
             int counter = 0;
             for (int i = 0; i < partnerRules.Count; i++)
