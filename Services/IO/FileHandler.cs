@@ -1,4 +1,5 @@
 ﻿using GnuConvert.Models.Bank;
+using GnuConvert.Models.MyPos;
 using GnuConvert.Models.Nyilvántartás;
 using GnuConvert.Services.DataParsers;
 using System;
@@ -14,19 +15,20 @@ using System.Windows.Shapes;
 using static GnuConvert.ViewModels.ConvertViewModel;
 namespace GnuConvert.Services.IO
 {
-    public  class FileHandler
+    public class FileHandler
     {
-       
+
         string ExceptionInvoiceFileLocation;
         string ConvertedFileLocation;
         string BankFileLocation;
+        string MyPosFileLocation;
         string InvoiceFileLocation;
         public List<string> Header = new List<string>()
         {"Verzio", "Naplo","KeltAkod", "Teljbevsor", "AfadNetto", "Fhatafa", "FmodBrt", "BizNettod", "MszAfad", "PnevBrtd", "PirszNfok", "PvarNtk", "PcimAfok", "AdoszAtk", "MegjBfok", "DnemBtk", "arfolyam", "kadomsz", "evaonyt", "okodonys", "kiegybiz","TAFADAT" };
-  
+
         public FileHandler(string exceptionInvoiceFileLocation, string convertedFileLocation, string bankFileLocation, string invoiceFileLocation)
         {
-            
+
             InvoiceFileLocation = invoiceFileLocation;
             BankFileLocation = bankFileLocation;
             ConvertedFileLocation = convertedFileLocation;
@@ -34,35 +36,50 @@ namespace GnuConvert.Services.IO
         }
         public Bank LoadBank() {
             if (BankFileLocation == null) {
-               // MessageBox.Show("Nincs megadva bank fájl helye","Hiba");
-               //hiát kell kezelni
+                // MessageBox.Show("Nincs megadva bank fájl helye","Hiba");
+                //hiát kell kezelni
                 return null;
             }
-            else { 
-              List<string> bankData = new FileReader().BankFileReader(BankFileLocation);  
-              List<Items> bankItems= new ProcessBankData().Parse(bankData);
-              Bank bank= new Bank(bankItems);
+            else {
+                List<string> bankData = new FileReader().FileReaderFunction(BankFileLocation);
+                List<Items> bankItems = new ProcessBankData().Parse(bankData);
+                Bank bank = new Bank(bankItems);
                 return bank;
             }
-        
+
         }
-      
-        public Invoice LoadInvoice() { 
-         if (InvoiceFileLocation == null) {
-               // MessageBox.Show("Nincs megadva a nyilvántartás fájl helye","Hiba");
-               //Hiát kell kezelni
-                return  null;
+
+        public Invoice LoadInvoice() {
+            if (InvoiceFileLocation == null) {
+                // MessageBox.Show("Nincs megadva a nyilvántartás fájl helye","Hiba");
+                //Hiát kell kezelni
+                return null;
             }
-            else { 
-               List<string> invoiceData= new FileReader().InvoiceFileReader(InvoiceFileLocation);
-               List<InvoiceRecord> invoiceItems= new ProcessInvoiceData().Parse(invoiceData);
-               Invoice Invoice = new Invoice(invoiceItems);
+            else {
+                List<string> invoiceData = new FileReader().FileReaderFunction(InvoiceFileLocation);
+                List<InvoiceRecord> invoiceItems = new ProcessInvoiceData().Parse(invoiceData);
+                Invoice Invoice = new Invoice(invoiceItems);
                 return Invoice;
             }
-        
+
         }
-       
-       
+
+        public MyPosData LoadMyPos() {
+            if (MyPosFileLocation == null)
+            {
+                //Hibaat kell kezelni
+                return null;
+            }
+            else {
+                List<string> myposData = new FileReader().FileReaderFunction(MyPosFileLocation);
+                List<MyPosRow> myposItems = new ProcessMyPosData().Parse(myposData);
+                MyPosData myPos = new MyPosData(myposItems);
+                return myPos;
+            }
+
+
+
+        }
         public void Write(List<List<string>> IrniFejlecsor, List<List<string>> IrniTetelsor)
         {
             List<int> exeptionIndexes = new List<int>();

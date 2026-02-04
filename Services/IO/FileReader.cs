@@ -11,15 +11,15 @@ namespace GnuConvert.Services.IO
 {
     public class FileReader
     {
-        public List<string> BankFileReader(string bankFileLocation)
+        public List<string> FileReaderFunction(string FileLocation)
         {
             List<string> bankLines = new List<string>();
             try
             {
-              
 
-               using StreamReader Reader = new StreamReader(bankFileLocation, Encoding.GetEncoding("ISO-8859-2"));//1252
-               
+
+                using StreamReader Reader = new StreamReader(FileLocation, Encoding.GetEncoding("ISO-8859-2"));//1252
+
                 var fileHeader = Reader.ReadLine();
                 while (!Reader.EndOfStream)
                 {
@@ -31,7 +31,7 @@ namespace GnuConvert.Services.IO
 
                 }
 
-            
+
 
             }
             catch (Exception e)
@@ -44,44 +44,8 @@ namespace GnuConvert.Services.IO
             }
             return bankLines;
 
+
+
         }
-        public List<string> InvoiceFileReader(string invoiceFileLocation)
-        {
-        
-            List<string> invoiceLines = new List<string>();
-            try
-            {
-
-                using StreamReader Reader = new StreamReader(invoiceFileLocation, Encoding.GetEncoding("ISO-8859-2"));//1252
-               
-                var fileHeader = Reader.ReadLine();
-                while (!Reader.EndOfStream)
-                {
-                    var line = Reader.ReadLine();
-                    invoiceLines.Add(line);
-                    line = "";
-
-                }
-
-               
-
-
-            }
-            catch (Exception e)
-            {
-                //Rossz megoldás A sevice rétegnek nem dolga az UI kezelése
-                //esetleges megoldás tovább doás vagy esemény generálás
-             
-               // MessageBox.Show(e.Message, "Nem Sikerült a nyilvántartás fájlt beolvasása.");
-
-            }
-
-            return invoiceLines;
-        }
-        //public List<Rule> RuleFileReader(string rulefilelocation) { 
-        
-        //}
-        
-     
     }
 }

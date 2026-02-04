@@ -67,6 +67,7 @@ namespace GnuConvert.Services.GlAssignmentService
 
             for (int i = 0; i < _bankTMP.Items.Count; i++)
             {
+                var osszeg = Osszegek[i];
                 if (float.Parse(Osszegek[i], new CultureInfo("hu-HU")) < 0)
                 {
                     NegativE = true;
@@ -94,7 +95,7 @@ namespace GnuConvert.Services.GlAssignmentService
                 {
                     //3. ha még mindig nincs egyezés akkor történik a fokonyvszám megjósolása mert akkor az nem egy szállító tétel.
                     if (ScoreCounting(Kozlemenyek[i]) <5 || (Kozlemenyek[i] == "" || Kozlemenyek[i] == null) && ScoreCounting(partnerNevek[i])<5)  { 
-                        var aRule= new PartnerRuleRowViewModel(partnerNevek[i], Kozlemenyek[i], Osszegek[i]);
+                        var aRule= new PartnerRuleRowViewModel(partnerNevek[i], Kozlemenyek[i], osszeg);
                          partnerRules.Add(aRule);
                     
                     }

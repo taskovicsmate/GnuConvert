@@ -41,6 +41,7 @@
 
   <ItemGroup>
     <Folder Include="Helpers\" />
+    <Folder Include="Services\Conversion\MyPosConversion\" />
     <Folder Include="Services\Logging\" />
   </ItemGroup>
 
