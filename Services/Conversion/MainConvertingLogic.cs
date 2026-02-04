@@ -1,9 +1,10 @@
-﻿using GnuConvert.Helpers;
-using GnuConvert.Models.Bank;
+﻿using GnuConvert.Models.Bank;
 using GnuConvert.Models.FokonyvSzamok;
 using GnuConvert.Models.Nyilvántartás;
+using GnuConvert.Models.PartnersAndRules;
 using GnuConvert.Services.Conversion.HelpFunctionsforConversion;
-using GnuConvert.Services.File;
+using GnuConvert.Services.GlAssignmentService;
+using GnuConvert.Services.IO;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,6 +24,8 @@ namespace GnuConvert.Services.Conversion
         DirectMatch _directMatch = new DirectMatch();
         InDirectMatch _inDirectMatch = new InDirectMatch();
         PredictMatch _predictMatch = new PredictMatch();
+       GlAssigmentCore _gblAssignmentCore;
+        Partner _partner ;
 
         private string _convertedBankFileLocation;
         private string _exceptionBankFileLocation;
@@ -31,29 +34,26 @@ namespace GnuConvert.Services.Conversion
         private string _bankiFokonyviSzam;
         private string _bankFileLocation;
         private string _invoiceFileLocation;
-        private string _fokonyvszamokFileLocation;
-
-        private readonly InvoicePredictor predictor = new InvoicePredictor();
-        public List<string> predicts = new List<string>();
+        
 
         private List<List<string>> Fejlec = new List<List<string>>();
         private List<List<string>> Tetelsor = new List<List<string>>();
-        private List<FokonyvSzamok> Fokonyv = new List<FokonyvSzamok>();
+     
         private Dictionary<int, int> AfaKulcsok = new Dictionary<int, int> {
 
             {1,25},{2,15},{3,5},{4,-1},{5,0},{6,12},{9,20},{10,18},{11,27} //[Kód,Százalék]
 
         };
 
-        public MainConvertingLogic(string convertedBankFileLocation, string exceptionBankFileLocation, string bizNettodKapcsolo, string bizNettod, string bankiFokonyviSzam, string bankFileLocation, string invoiceFileLocation, string fokonyvszamokFileLocation)
+        public MainConvertingLogic( string bizNettodKapcsolo, string bizNettod, string bankiFokonyviSzam, string bankFileLocation, string invoiceFileLocation,Partner p)
         {
 
-            _convertedBankFileLocation = convertedBankFileLocation
-                ?? @"C:\\Eredmeny\\KonvertáltSzámlák.csv";
+            _convertedBankFileLocation = App.Settings.KonvertaltSzamlakHelye+ @"\\KonvertaltSzamlak.csv"
+                ?? @"C:\\Eredmeny\\KonvertaltSzamlak.csv";
 
-            _exceptionBankFileLocation = exceptionBankFileLocation
-                ?? @"C:\\Eredmeny\\KivételesSzámlák.csv";
-
+            _exceptionBankFileLocation = App.Settings.KivetelesSzamlakHelye+ @"\\KivetelesSzamlak.csv"
+                ?? @"C:\\Eredmeny\\KivetelesSzamlak.csv";
+          
             _bizNettodKapcsolo = bizNettodKapcsolo ?? "";
 
             _bizNettod = bizNettod ?? "";
@@ -67,12 +67,11 @@ namespace GnuConvert.Services.Conversion
             _invoiceFileLocation = invoiceFileLocation
                 ?? throw new ArgumentNullException(nameof(invoiceFileLocation));
 
-            _fokonyvszamokFileLocation = fokonyvszamokFileLocation
-                ?? throw new ArgumentNullException(nameof(fokonyvszamokFileLocation));
 
             _bank = new Bank();
             _invoice = new Invoice();
-            _fileHandler = new FileHandler(_exceptionBankFileLocation, _convertedBankFileLocation, _bankFileLocation, _invoiceFileLocation, _fokonyvszamokFileLocation);
+            _partner = p;
+            _fileHandler = new FileHandler(_exceptionBankFileLocation, _convertedBankFileLocation, _bankFileLocation, _invoiceFileLocation);
         }
         public MainConvertingLogic()
         {
@@ -85,7 +84,6 @@ namespace GnuConvert.Services.Conversion
         {
             _bank = _fileHandler.LoadBank();
             _invoice = _fileHandler.LoadInvoice();
-            // Fokonyv = _fileHandler.LoadFokonyvSzamok();
         }
 
 
@@ -141,7 +139,7 @@ namespace GnuConvert.Services.Conversion
                 if (!found)
                 {
                     //3. ha még mindig nincs egyezés akkor történik a fokonyvszám megjósolása mert akkor az nem egy szállító tétel.
-                    predictedFokonyviSzam = _predictMatch.PredictSearch(Kozlemenyek[i], partnerNevek[i]);
+                    predictedFokonyviSzam = _predictMatch.PredictSearch(Kozlemenyek[i], partnerNevek[i],_partner);
 
                 }
                 if (predictedFokonyviSzam == null && !found)

@@ -1,5 +1,4 @@
-﻿using GnuConvert.Helpers;
-using GnuConvert.Models.Nyilvántartás;
+﻿using GnuConvert.Models.Nyilvántartás;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
@@ -71,7 +70,7 @@ namespace GnuConvert.Services.Conversion.HelpFunctionsforConversion
             }
             else
             {
-                if (keresendo.Length - 1 <= kerindx)
+                if (keresendo.Length - 2 <= kerindx)
                 {
                     return true;
                 }

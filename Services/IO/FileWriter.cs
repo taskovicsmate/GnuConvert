@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GnuConvert.Services.File
+namespace GnuConvert.Services.IO
 {
     public class FileWriter
     {
 
         public void FileHeaderWriter(string ConvertedFileLocation, string ExceptionInvoiceFileLocation, List<string> Header)
         {
+         
             try
             {
                 using FileStream fs = new FileStream(ConvertedFileLocation, FileMode.Append);
@@ -36,6 +37,7 @@ namespace GnuConvert.Services.File
       
         public void FileCsvWriter(List<List<string>> IrniTetelsor, List<List<string>> IrniFejlecsor, string FileLocation, List<int> indexes)
         {
+
             try
             {
                 using FileStream fs = new FileStream(FileLocation, FileMode.Append);

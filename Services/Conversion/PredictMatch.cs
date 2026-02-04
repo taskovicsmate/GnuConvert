@@ -1,5 +1,7 @@
-﻿using GnuConvert.Helpers;
+﻿
 using GnuConvert.Models.FokonyvSzamok;
+using GnuConvert.Models.PartnersAndRules;
+using GnuConvert.Services.GlAssignmentService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +12,13 @@ namespace GnuConvert.Services.Conversion
 {
     public class PredictMatch
     {
-        public string PredictSearch(string kozlemeny,string partnerNev)
+        public string PredictSearch(string kozlemeny,string partnerNev,Partner partner)
         {
            string accountNumber = "";
 
-            var Predictor = new FokonyvMegmondo();
-            SearchingAlgorithm sc = new SearchingAlgorithm();
-            accountNumber = sc.PredictAccount(kozlemeny + partnerNev);
+           
+            GlAssigmentCore sc = new GlAssigmentCore();
+            accountNumber = sc.PredictAccount(kozlemeny +" "+ partnerNev,partner);
 
             return accountNumber;
         }

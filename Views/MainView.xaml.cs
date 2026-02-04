@@ -1,7 +1,9 @@
 ﻿using GnuConvert.login;
 using GnuConvert.Services.Settings;
+using GnuConvert.Services.Storage;
 using GnuConvert.ViewModels;
 using GnuConvert.Views;
+using Stripe.Tax;
 using System.ComponentModel;
 using System.IO;
 using System.Text;
@@ -28,7 +30,8 @@ namespace GnuConvert.Views
         }
         private void OnClosing(object sender, CancelEventArgs e)
         {
-            AppSettingsManager.SettingsWriter();
+            
+           
         }
         // Logout_Click - kilépés logika
         private void Logout_Click(object sender, RoutedEventArgs e)

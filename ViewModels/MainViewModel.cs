@@ -35,9 +35,7 @@ namespace GnuConvert.ViewModels
 
         public MainViewModel()
         {
-            // ✅ Ha van json settings, töltse be
-            if (File.Exists("Settings.JSON"))
-                AppSettingsManager.SettingsReader();
+          
 
             // ✅ Kezdő nézet
             CurrentViewModel = _fooldalVM;
