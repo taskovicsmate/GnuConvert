@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace GnuConvert.Services.Storage
 {
@@ -25,6 +20,8 @@ namespace GnuConvert.Services.Storage
             Path.Combine(PartnersRoot, partnerId);
         public static string PartnersRegistryFile =>
               Path.Combine(PartnersRoot, "partners.json");
+        public static string WebshopPartnersRegistryFile =>
+              Path.Combine(PartnersRoot, "webshoppartners.json");
         public static string PartnerRulesFile(string partnerId) =>
             Path.Combine(PartnerDir(partnerId), "rules.json");
     }

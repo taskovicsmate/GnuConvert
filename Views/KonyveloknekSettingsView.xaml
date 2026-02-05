@@ -109,7 +109,7 @@
                 <Label x:Name="label1_Copy1" Content="{Binding SelectFokonyvFilePath}" Margin="300,25,205,25" Background="#FFCABA9C" Width="auto" Height="30" VerticalContentAlignment="Center" FontSize="16" Foreground="#FFF5F3EE"/>
             </Grid>
             <Grid Height="175">
-                <Button x:Name="button2" Content="Save" Command="{Binding SaveCommand}" HorizontalAlignment="Left" Margin="926,0,0,0" VerticalAlignment="Center" Width="67" Height="31"/>
+                <Button x:Name="button2" Style="{DynamicResource ButtonStyle2}" Content="Save" Command="{Binding SaveCommand}" HorizontalAlignment="Left" Margin="926,0,0,0" VerticalAlignment="Center" Width="67" Height="31" Background="#FF7A8F7A" Foreground="#FFF5F3EE" BorderBrush="{x:Null}" FontWeight="Bold" FontSize="14" FontFamily="Century Schoolbook"/>
             </Grid>
         </StackPanel>
     </Grid>

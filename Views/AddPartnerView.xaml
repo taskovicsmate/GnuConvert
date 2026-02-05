@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GnuConvert.Views"
-             mc:Ignorable="d" Width="1100">
-    <Border BorderBrush="Black" BorderThickness="2">
+             mc:Ignorable="d">
+    <Border BorderBrush="#FF7A8F7A" BorderThickness="3">
         <Grid Background="#FFF5F3EE">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -27,10 +27,10 @@
                         <ColumnDefinition Width="365*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Button Command="{Binding CancelPartnerCreationCommand}" Content="Vissza" FontSize="14"  Style="{DynamicResource ButtonStyle1}" Background="#FF8A6240" Foreground="#FFF5F3EE" FontFamily="Century Schoolbook" Padding="3,3,3,3" Grid.Column="3" Margin="234,-91,29,91" />
+                    <Button Command="{Binding CancelPartnerCreationCommand}" Content="Vissza" FontSize="14"  Style="{DynamicResource ButtonStyle1}" Background="#FF7A8F7A" Foreground="#FFF5F3EE" FontFamily="Century Schoolbook" Padding="10,5,10,5" Grid.Column="3" Margin="234,-90,30,90" HorizontalAlignment="Right" FontWeight="Bold" Grid.IsSharedSizeScope="True" />
 
-                    <Label Content="Partner neve:" FontSize="14" VerticalAlignment="Center" FontFamily="Century Schoolbook"/>
-                    <TextBox Text="{Binding PartnerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="14" Padding="2" Grid.ColumnSpan="2" Margin="90,0,0,0" FontFamily="Century Schoolbook"/>
+                    <Label Content="Új partner neve:" FontSize="14" VerticalAlignment="Center" FontFamily="Century Schoolbook"/>
+                    <TextBox Text="{Binding PartnerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="14" Padding="2" Grid.ColumnSpan="2" Margin="125,0,0,0" FontFamily="Century Schoolbook"/>
                 </Grid>
 
                 <TextBlock Text="Válassza ki a partneréhez tartozó megfelelő fájlokat."

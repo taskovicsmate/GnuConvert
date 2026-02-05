@@ -87,22 +87,68 @@
             <!-- FELSŐ MENÜ -->
             <StackPanel DockPanel.Dock="Left" Width="200" Background="#FFCABA9C" HorizontalAlignment="Center">
                 <TextBlock Text="Gnu Convert" Foreground="#FF4D2D18" FontSize="20" Margin="10" FontFamily="Century Schoolbook" FontWeight="Bold" />
-                <Button Content="Főoldal" Margin="10" Height="40"  Command="{Binding ShowFooldalCommand}" FontFamily="Century Schoolbook" FontSize="13" Foreground="#FFF5F3EE" RenderTransformOrigin="0.5,0.5" Padding="1,1,1,1" BorderThickness="0.8,0.8,0.8,0.8" Background="#FF4D4335" Style="{DynamicResource ButtonStyle2}" BorderBrush="{x:Null}" >
-                    <Button.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform/>
-                            <SkewTransform AngleX="0"/>
-                            <RotateTransform/>
-                            <TranslateTransform/>
-                        </TransformGroup>
-                    </Button.RenderTransform>
-
+                <Button Content="Főoldal" Margin="10" Height="40"  Command="{Binding ShowFooldalCommand}" FontFamily="Century Schoolbook" FontSize="13" Foreground="#FFF5F3EE" RenderTransformOrigin="0.5,0.5" Padding="1,1,1,1" BorderThickness="0.8,0.8,0.8,0.8" Background="#FF4D4335" BorderBrush="{x:Null}" >
+                   <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource ButtonStyle2}">
+                        <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsFooldalActive}" Value="True">
+                                <Setter Property="Background" Value="#FF4D4335"/>
+                                <Setter Property="Foreground" Value="#FFF5F3EE"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                    </Button.Style>
                 </Button>
-                <Button Content="Bank konvertálás" Margin="10" Height="40" Command="{Binding ShowConvertCommand}" FontSize="13" FontFamily="Century Schoolbook" Background="#FF4D4335" Foreground="#FFF5F3EE" BorderThickness="0.8,0.8,0.8,0.8" BorderBrush="{x:Null}" Style="{DynamicResource FoMenu}"  />
-                <Button Content="Webshop konvertálás" Margin="10" Height="40" Command="{Binding ShowWebshopCommand}" FontSize="13" FontFamily="Century Schoolbook" Background="#FF4D4335" Foreground="#FFF5F3EE" BorderThickness="0.8,0.8,0.8,0.8" BorderBrush="{x:Null}" Style="{DynamicResource FoMenu}" />
-                <Button Content="KATA-s vállalkozóknak" Margin="10" Height="40" Command="{Binding ShowKataCommand}" FontSize="13" FontFamily="Century Schoolbook" Background="#FF4D4335" Foreground="#FFF5F3EE" BorderThickness="0.8,0.8,0.8,0.8" BorderBrush="{x:Null}" Style="{DynamicResource FoMenu}" />
-                <Button Style="{DynamicResource FoMenu}" Content="Beállítások" Margin="10" Height="40" Command="{Binding ShowSettingsCommand}" FontSize="13" FontFamily="Arial" Background="#FF4D4335" BorderThickness="0.8,0.8,0.8,0.8" Foreground="#FFF5F3EE" BorderBrush="{x:Null}"  />
+                <Button Content="Bank konvertálás" Margin="10" Height="40" Command="{Binding ShowConvertCommand}" FontSize="13" FontFamily="Century Schoolbook" Background="#FF4D4335" Foreground="#FFF5F3EE" BorderThickness="0.8,0.8,0.8,0.8" BorderBrush="{x:Null}" >
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource FoMenu}">
+                        <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsConvertActive}" Value="True">
+                                <Setter Property="Background" Value="#FFF5F3EE"/>
+                                <Setter Property="Foreground" Value="#FF4D4335"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                    </Button.Style>
+                </Button>
+                <Button Content="Webshop konvertálás" Margin="10" Height="40" Command="{Binding ShowWebshopCommand}" FontSize="13" FontFamily="Century Schoolbook" Background="#FF4D4335" Foreground="#FFF5F3EE" BorderThickness="0.8,0.8,0.8,0.8" BorderBrush="{x:Null}">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource FoMenu}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsWebshopActive}" Value="True">
+                                    <Setter Property="Background" Value="#FF4D4335"/>
+                                    <Setter Property="Foreground" Value="#FFF5F3EE"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button Content="KATA-s vállalkozóknak" Margin="10" Height="40" Command="{Binding ShowKataCommand}" FontSize="13" FontFamily="Century Schoolbook" Background="#FF4D4335" Foreground="#FFF5F3EE" BorderThickness="0.8,0.8,0.8,0.8" BorderBrush="{x:Null}">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource FoMenu}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsKataActive}" Value="True">
+                                    <Setter Property="Background" Value="#FF4D4335"/>
+                                    <Setter Property="Foreground" Value="#FFF5F3EE"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button Content="Beállítások" Margin="10" Height="40" Command="{Binding ShowSettingsCommand}" FontSize="13" FontFamily="Arial" Background="#FF4D4335" BorderThickness="0.8,0.8,0.8,0.8" Foreground="#FFF5F3EE" BorderBrush="{x:Null}" >
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource FoMenu}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSettingsActive}" Value="True">
+                                    <Setter Property="Background" Value="#FF4D4335"/>
+                                    <Setter Property="Foreground" Value="#FFF5F3EE"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
                 <Button Content="Kijelentkezés" FontSize="13" FontFamily="Century Schoolbook" Height="40" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="10,10,10,10" Click="Logout_Click" Background="#FF8A6240" BorderThickness="0.8,0.8,0.8,0.8" Foreground="#FFF5F3EE" BorderBrush="{x:Null}" Style="{DynamicResource FoMenu}"/>
+
 
             </StackPanel>
 
