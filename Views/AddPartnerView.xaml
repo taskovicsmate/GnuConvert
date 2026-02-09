@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GnuConvert.Views"
-             mc:Ignorable="d" Width="1100">
-    <Border BorderBrush="Black" BorderThickness="2">
+             mc:Ignorable="d">
+    <Border BorderBrush="#FF7A8F7A" BorderThickness="3">
         <Grid Background="#FFF5F3EE">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -16,9 +16,14 @@
             <!-- FELSŐ RÉSZ: minden vezérlő -->
             <StackPanel Grid.Row="0" Margin="10">
                 <TextBlock FontSize="26" Foreground="#FF4D4335" FontFamily="Century Schoolbook" FontWeight="Bold"><Run Text="Új partner hozzáadása"/><Run Language="hu-hu" Text=" és betanítása"/><LineBreak/><Run Language="hu-hu"/></TextBlock>
-                <TextBlock FontSize="16" Foreground="#FF4D4335" Margin="0,8,0,0" FontFamily="Century Schoolbook">
-                    Adja meg a partner nevét és a tételelkhez tartozó főkönyvi számot.
-                </TextBlock>
+                <TextBlock FontSize="16" Foreground="#FF4D4335" FontFamily="Century Schoolbook"><Run Text="Adja meg a partner nevét és a tételelkhez tartozó főkönyvi számot."/></TextBlock>
+                <Grid Margin="0,10,0,0">
+                    <Label Content="Új partner bankjának kiválasztása:" FontSize="14" VerticalAlignment="Center" FontFamily="Century Schoolbook"/>
+                    <ComboBox ItemsSource="{Binding BankOptions}"
+                              SelectedItem="{Binding SelectedConversionPipeline, Mode=TwoWay}"
+                              MinWidth="100" FontSize="14" FontWeight="Bold" FontFamily="Century Schoolbook" Width="100" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="250,0,0,0"/>
+                </Grid>
+
                 <Grid Margin="0,16,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -27,10 +32,10 @@
                         <ColumnDefinition Width="365*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Button Command="{Binding CancelPartnerCreationCommand}" Content="Vissza" FontSize="14"  Style="{DynamicResource ButtonStyle1}" Background="#FF8A6240" Foreground="#FFF5F3EE" FontFamily="Century Schoolbook" Padding="3,3,3,3" Grid.Column="3" Margin="234,-91,29,91" />
+                    <Button Command="{Binding CancelPartnerCreationCommand}" Content="Vissza" FontSize="14"  Style="{DynamicResource ButtonStyle1}" Background="#FF7A8F7A" Foreground="#FFF5F3EE" FontFamily="Century Schoolbook" Padding="10,5,10,5" Grid.Column="3" Margin="234,-90,30,90" HorizontalAlignment="Right" FontWeight="Bold" Grid.IsSharedSizeScope="True" />
 
-                    <Label Content="Partner neve:" FontSize="14" VerticalAlignment="Center" FontFamily="Century Schoolbook"/>
-                    <TextBox Text="{Binding PartnerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="14" Padding="2" Grid.ColumnSpan="2" Margin="90,0,0,0" FontFamily="Century Schoolbook"/>
+                    <Label Content="Új partner neve:" FontSize="14" VerticalAlignment="Center" FontFamily="Century Schoolbook"/>
+                    <TextBox Text="{Binding PartnerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="14" Padding="2" Grid.ColumnSpan="2" Margin="125,0,0,0" FontFamily="Century Schoolbook"/>
                 </Grid>
 
                 <TextBlock Text="Válassza ki a partneréhez tartozó megfelelő fájlokat."

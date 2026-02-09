@@ -24,8 +24,7 @@ namespace GnuConvert.Services.Conversion
         DirectMatch _directMatch = new DirectMatch();
         InDirectMatch _inDirectMatch = new InDirectMatch();
         PredictMatch _predictMatch = new PredictMatch();
-       GlAssigmentCore _gblAssignmentCore;
-        Partner _partner ;
+        Partner _partner;
 
         private string _convertedBankFileLocation;
         private string _exceptionBankFileLocation;
@@ -85,10 +84,6 @@ namespace GnuConvert.Services.Conversion
             _bank = _fileHandler.LoadBank();
             _invoice = _fileHandler.LoadInvoice();
         }
-
-
-
-
 
 
         public void Rendezes()

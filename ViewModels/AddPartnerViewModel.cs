@@ -21,15 +21,18 @@ namespace GnuConvert.ViewModels
         private string _selectedBankPath;
         private string _selectInvoiceFilePath;
         private bool _isBankFilechosen;
+        private bool _isPipelineChosen;
         private bool _isInvoiceFilechosen;
         private string _PartnerName;
         List<Partner> ExistingPartners;
 
         private bool _isBulkUpdating;
-        public  ObservableCollection<PartnerRuleRowViewModel> Rows { get;  } = new();
+        public ObservableCollection<PartnerRuleRowViewModel> Rows { get; } = new();
+        public ObservableCollection<ConversionPipeline> BankOptions { get; } = new() ;
         public List<PartnerRuleRowViewModel> RowsTemp { get; set; } = new();
         string NewPartnerId;
         private PartnerRuleRowViewModel? _selectedRow;
+        private ConversionPipeline? _conversionPipeline;
 
         public string SelectedBankPath
         {
@@ -57,6 +60,16 @@ namespace GnuConvert.ViewModels
                 {
                     _PartnerName = value; OnPropertyChanged();
                 }
+            }
+        }
+        public bool IsPipelineChosen
+        {
+            get => _isPipelineChosen;
+            set
+            {
+                if (_isPipelineChosen == value) return;
+                _isPipelineChosen = value;
+                OnPropertyChanged(nameof(IsPipelineChosen));
             }
         }
         public bool IsBankFileChosen
@@ -92,7 +105,11 @@ namespace GnuConvert.ViewModels
             get => _selectedRow;
             set { _selectedRow = value; OnPropertyChanged(); }
         }
-
+        public ConversionPipeline? SelectedConversionPipeline
+        {
+            get => _conversionPipeline;
+            set { _conversionPipeline = value; OnPropertyChanged(); IsPipelineChosen = true; }
+        }
         private readonly Action _close;
         private readonly Action _load;
         public AddPartnerViewModel(Action onSaved,Action onClose,List<Partner> partners)
@@ -100,7 +117,8 @@ namespace GnuConvert.ViewModels
             ExistingPartners = partners;
             _close = onClose;
             _load = onSaved;
-            // assigmentCore = new GlAssigmentCore(SelectedBankPath,SelectInvoiceFilePath,NewPartnerId);
+            BankOptions.Add(ConversionPipeline.Bank);
+            BankOptions.Add(ConversionPipeline.Webshop);
             Rows.Add(new PartnerRuleRowViewModel("Példa","BANKKOLTSEG", "245","5322"));
             SelectBankFileCommand = new RelayCommand(SelectBankFile);
             SelectInvoiceFileCommand = new RelayCommand(SelectInvoiceFile);
@@ -116,14 +134,14 @@ namespace GnuConvert.ViewModels
         private void MakePartner() {
 
           
-            if (IsBankFileChosen && IsInvoiceFilechosen && PartnerName != null && PartnerName != "")
+            if (IsBankFileChosen && IsInvoiceFilechosen && PartnerName != null && PartnerName != ""&& IsPipelineChosen)
             {
                 NewPartnerId = TextFormatting.Normalize(PartnerName);
                 List<Rule> rules = new List<Rule>();
                 rules = ruleMaker.GetRules(RowsTemp);
-                Partner partner = new Partner(PartnerName,NewPartnerId,rules);
+                Partner partner = new Partner(PartnerName,NewPartnerId,rules, SelectedConversionPipeline!.Value);
                 App.PartnerRulesStore.Save(partner);
-                App.PartnerRulesStore.AddPartner(partner.Name, partner.Id);
+                App.PartnerRulesStore.AddPartner(partner.Name, partner.Id, SelectedConversionPipeline!.Value);
                 _load();
                 _close();
             }
@@ -174,9 +192,8 @@ namespace GnuConvert.ViewModels
                     SelectedBankPath = dialog.FileName;
                     IsBankFileChosen = true;
                     ruleMaker = new RuleMaker(SelectedBankPath, SelectInvoiceFilePath);
-                    ruleMaker.LoadData();
-                    ruleMaker.Rendezes();
-                    RowsTemp = ruleMaker.GetRuleRows();
+                    ruleMaker.RunRuleCreation(SelectedConversionPipeline!.Value);
+                     RowsTemp = ruleMaker.GetRuleRows();
                     AddRows();
                 }
 

@@ -8,7 +8,7 @@
         <vm:KonyveloknekSettingsViewModel x:Key="FokonyvVM"/>
         
        <vm:ConvertViewModel x:Key="ConvertVM"/>
-
+        <vm:WebshopViewModel x:Key="WebshopVM"/>
         <DataTemplate DataType="{x:Type vm:ConvertViewModel}">
             <v:ConvertView />
         </DataTemplate>

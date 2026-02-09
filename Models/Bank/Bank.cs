@@ -10,6 +10,8 @@ namespace GnuConvert.Models.Bank
     public class Bank
     {
         private readonly List<Items> _items;
+        private string _bankName;
+        private string _encoding;
 
         public IReadOnlyList<Items> Items => _items;
 

@@ -41,6 +41,7 @@ namespace GnuConvert.Services.Conversion.HelpFunctionsforConversion
         }
         public static bool SzovegKereso(string keresendo, string nev, int kerindx, int nevidx)
         {//Ha a nevnek a vegen van a keresendő akkor akkor nem találja meg
+            //Hiba nem az egész karakter sorozat egyezőségét vizsgálja, az utolsó karakter nem nézi
             if (keresendo == "" || keresendo == " ") return false;
             if (keresendo.Length == kerindx)
                 return true;
@@ -70,7 +71,7 @@ namespace GnuConvert.Services.Conversion.HelpFunctionsforConversion
             }
             else
             {
-                if (keresendo.Length - 2 <= kerindx)
+                if (keresendo.Length - 1 <= kerindx)
                 {
                     return true;
                 }

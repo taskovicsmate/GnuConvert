@@ -17,7 +17,7 @@ namespace GnuConvert.Services.Storage
             WriteIndented = true
         };
 
-        public Partner LoadOrCreateDefault(string partnerName,string partnerid)
+        public Partner LoadOrCreateDefault(string partnerName,string partnerid,ConversionPipeline loadedPipeline)
         {
             if (string.IsNullOrWhiteSpace(partnerid))
                 throw new ArgumentException("partnerId cannot be null or empty.", nameof(partnerid));
@@ -27,6 +27,7 @@ namespace GnuConvert.Services.Storage
 
             // Ensure directory exists
             Directory.CreateDirectory(partnerDir);
+            var pipeline = GetPipelineFromRegistry(partnerid);
 
             // 1) If file exists, try to load it
             if (File.Exists(rulesFile))
@@ -35,8 +36,9 @@ namespace GnuConvert.Services.Storage
                 {
                     var json = File.ReadAllText(rulesFile);
                     var loaded = JsonSerializer.Deserialize<List<Rule>>(json, _jsonOptions);
+                   
                     if (loaded != null)
-                        return new Partner(partnerName,partnerid,loaded);
+                        return new Partner(partnerName,partnerid,loaded,loadedPipeline);
                 }
                 catch 
                 {
@@ -52,7 +54,19 @@ namespace GnuConvert.Services.Storage
 
             return defaults;
         }
-
+        private ConversionPipeline GetPipelineFromRegistry(string partnerId)
+        {
+            try
+            {
+                var partners = LoadAll(); // a te meglévő LoadAll-od
+                var p = partners.FirstOrDefault(x => x.Id == partnerId);
+                return p != null ? p.Pipelines : default; // default = enum 0 
+            }
+            catch
+            {
+                return default;
+            }
+        }
         public void Save(Partner partner)
         {
             if (partner == null)
@@ -108,19 +122,20 @@ namespace GnuConvert.Services.Storage
                 return new List<Partner>();
             }
         }
-        public void AddPartner(string partnerId, string displayName)
+        public void AddPartner(string partnerId, string displayName,ConversionPipeline pipeline)
         {
             if (string.IsNullOrWhiteSpace(partnerId))
                 throw new ArgumentException("partnerId is required.", nameof(partnerId));
             if (string.IsNullOrWhiteSpace(displayName))
                 throw new ArgumentException("displayName is required.", nameof(displayName));
-
+            if (pipeline == default)
+                throw new ArgumentException("pipeline is required.", nameof(pipeline));
             var partners = LoadAll().ToList();
 
             if (partners.Any(p => p.Id == partnerId))
                 throw new InvalidOperationException($"Partner with id '{partnerId}' already exists.");
 
-            partners.Add(new Partner(partnerId, displayName));
+            partners.Add(new Partner(partnerId, displayName,pipeline));
 
             JsonFileStore.SaveAtomic(AppPaths.PartnersRegistryFile, partners);
 
