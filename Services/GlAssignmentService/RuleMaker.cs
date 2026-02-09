@@ -1,18 +1,13 @@
 ﻿using GnuConvert.Models.Bank;
+using GnuConvert.Models.MyPos;
 using GnuConvert.Models.Nyilvántartás;
 using GnuConvert.Models.PartnersAndRules;
 using GnuConvert.Services.Conversion;
 using GnuConvert.Services.Conversion.HelpFunctionsforConversion;
 using GnuConvert.Services.IO;
 using GnuConvert.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 
 namespace GnuConvert.Services.GlAssignmentService
@@ -23,6 +18,7 @@ namespace GnuConvert.Services.GlAssignmentService
         List<PartnerRuleRowViewModel> partnerRules = new List<PartnerRuleRowViewModel>();
         FileHandler _fileHandler;
         Bank _bankTMP = new Bank();
+        MyPosData _myPosTMP = new MyPosData();
         Invoice _invoiceTMP = new Invoice();
         DirectMatch _directMatch = new DirectMatch();
         InDirectMatch _inDirectMatch = new InDirectMatch();
@@ -41,31 +37,42 @@ namespace GnuConvert.Services.GlAssignmentService
      
             _fileHandler = new FileHandler("", "", BankFileLocation, InvoiceFileLocation);
         }
-        public void LoadData()
+        public void LoadBankData()
         {
             _bankTMP = _fileHandler.LoadBank();
             _invoiceTMP = _fileHandler.LoadInvoice();
         }
-        public void Rendezes()
+        public void RunRuleCreation(ConversionPipeline SelectedPipeline)
         {
-           
-        
+         
+            switch (SelectedPipeline)
+            {
+                case ConversionPipeline.Bank:
+                    LoadBankData();
+                     BankRules();
+                    break;
+
+                case ConversionPipeline.Webshop:
+                    LoadMyposData();
+                    MyPosRules();
+                    break;
+
+              
+            }
+        }
+        public void LoadMyposData()
+        {
+            _myPosTMP = _fileHandler.LoadMyPos();
+            _invoiceTMP = _fileHandler.LoadInvoice();
+        }
+
+        public void RuleMaking(int ItemsNumber, List<string> Osszegek, List<string> Kozlemenyek, List<string> partnerNevek, List<string> datumok) {
             bool found = false;
             bool NegativE = false;
-            List<string> ReszeredmenyFejlec = new List<string>();
-            List<string> ReszeredmenyTetelsor = new List<string>();
+         
 
             List<string> Data = new List<string>();
-
-            var partnerNevek = _bankTMP.Items.Select(i => i.PartnerNeve).ToList();
-            var datumok = _bankTMP.Items.Select(i => i.Kelt).ToList();
-            var fizetesModok = _bankTMP.Items.Select(i => i.TranzakcioTipusa).ToList();
-            var Kozlemenyek = _bankTMP.Items.Select(i => i.Kozlemeny).ToList();
-            var Osszegek = _bankTMP.Items.Select(i => i.Osszeg).ToList();
-
-   
-
-            for (int i = 0; i < _bankTMP.Items.Count; i++)
+            for (int i = 0; i < ItemsNumber; i++)
             {
                 var osszeg = Osszegek[i];
                 if (float.Parse(Osszegek[i], new CultureInfo("hu-HU")) < 0)
@@ -94,13 +101,14 @@ namespace GnuConvert.Services.GlAssignmentService
                 if (!found)
                 {
                     //3. ha még mindig nincs egyezés akkor történik a fokonyvszám megjósolása mert akkor az nem egy szállító tétel.
-                    if (ScoreCounting(Kozlemenyek[i]) <5 || (Kozlemenyek[i] == "" || Kozlemenyek[i] == null) && ScoreCounting(partnerNevek[i])<5)  { 
-                        var aRule= new PartnerRuleRowViewModel(partnerNevek[i], Kozlemenyek[i], osszeg);
-                         partnerRules.Add(aRule);
-                    
+                    if (ScoreCounting(Kozlemenyek[i]) < 5 || (Kozlemenyek[i] == "" || Kozlemenyek[i] == null) && ScoreCounting(partnerNevek[i]) < 5)
+                    {
+                        var aRule = new PartnerRuleRowViewModel(partnerNevek[i], Kozlemenyek[i], osszeg);
+                        partnerRules.Add(aRule);
+
                     }
 
-                   
+
 
                 }
                 found = false;
@@ -110,7 +118,33 @@ namespace GnuConvert.Services.GlAssignmentService
 
 
             }
+
+        }
+        public void BankRules()
+        {
+            var partnerNevek = _bankTMP.Items.Select(i => i.PartnerNeve).ToList();
+            var datumok = _bankTMP.Items.Select(i => i.Kelt).ToList();
+            var fizetesModok = _bankTMP.Items.Select(i => i.TranzakcioTipusa).ToList();
+            var Kozlemenyek = _bankTMP.Items.Select(i => i.Kozlemeny).ToList();
+            var Osszegek = _bankTMP.Items.Select(i => i.Osszeg).ToList();
+
+            RuleMaking(_bankTMP.Items.Count, Osszegek, Kozlemenyek, partnerNevek, datumok);
+
+        }
+        public void MyPosRules()
+        {
+                
+            var partnerNevek = _myPosTMP.Items.Select(i => i.Description).ToList();
+            var datumok = _myPosTMP.Items.Select(i => i.DateSettled).ToList();
+            var fizetesModok = _myPosTMP.Items.Select(i => i.TransactionType).ToList();
+            var Kozlemenyek = _myPosTMP.Items.Select(i => i.TransactionType).ToList();
+            var Osszegek = _myPosTMP.Items.Select(i => i.Ammount).ToList();
+
+            RuleMaking(_myPosTMP.Items.Count, Osszegek, Kozlemenyek, partnerNevek, datumok);
+            //Ezt ki kell javítani de idő hiányában ezt későbre hagyom!
            
+          
+
         }
         public List<PartnerRuleRowViewModel> GetRuleRows() {
             return partnerRules;

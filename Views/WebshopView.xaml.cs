@@ -30,7 +30,7 @@ namespace GnuConvert.Views
                 if (openFileDialog.ShowDialog() == true)
                 {
                     var WebshopModel = new WebshopViewModel();
-                    WebshopModel.FileLocation = openFileDialog.FileName;
+                   // WebshopModel.FileLocation = openFileDialog.FileName;
                     
                 }
 

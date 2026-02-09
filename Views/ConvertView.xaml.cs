@@ -16,6 +16,7 @@ namespace GnuConvert.Views
         public ConvertView()
         {
             InitializeComponent();
+        
         }
 
        

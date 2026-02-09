@@ -46,15 +46,24 @@ namespace GnuConvert.ViewModels
         public ICommand InvoiceFilePathCommand { get; }
         public ICommand ConvertDataCommand { get; }
         public ICommand DeletePartnerCommand { get; }
-     
 
-       
+        public ICommand ViewLoadedCommand { get; }
+
+     
+        
+
+        private void OnViewLoaded()
+        {
+            LoadPartners();
+        }
+
 
         private object _currentSubView;
 
         public ConvertViewModel()
         {
 
+            ViewLoadedCommand = new RelayCommand(OnViewLoaded);
             ShowAddPartnerCommand = new RelayCommand(() => CurrentSubView = new AddPartnerViewModel(onSaved: LoadPartners, onClose: CloseSubView,Partners.ToList()));
             BankFilePathCommand = new RelayCommand(ChoseBankFile);
             InvoiceFilePathCommand = new RelayCommand(ChoseInvoiceFile);
@@ -79,7 +88,7 @@ namespace GnuConvert.ViewModels
                 if (_selectedPartner != null)
                 {
                    
-                    partner = _rulesStore.LoadOrCreateDefault(_selectedPartner.Name,_selectedPartner.Id);
+                    partner = _rulesStore.LoadOrCreateDefault(_selectedPartner.Name,_selectedPartner.Id, _selectedPartner.Pipelines);
                    isPartnerSelected = true;
                    
                 }
@@ -230,7 +239,13 @@ namespace GnuConvert.ViewModels
         {
             Partners.Clear();
             foreach (var p in _rulesStore.LoadAll())
-                Partners.Add(p);
+            {
+                if (p.Pipelines == ConversionPipeline.Bank)
+                {
+                    Partners.Add(p);
+
+                }
+            }
         }
      
         public event PropertyChangedEventHandler PropertyChanged;

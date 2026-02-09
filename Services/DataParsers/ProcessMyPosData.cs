@@ -26,6 +26,9 @@ namespace GnuConvert.Services.DataParsers
        
             foreach (string line in lines)
             {
+                if(line==null||line==""||line.ToCharArray().Length<50)
+                    continue;
+
                 var Cells = line.Split(';');
                 string DateInitiated = Cells[0];
                 var Elements = Cells[1].ToCharArray();

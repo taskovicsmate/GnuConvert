@@ -21,7 +21,7 @@ namespace GnuConvert.Services.IO
         string ExceptionInvoiceFileLocation;
         string ConvertedFileLocation;
         string BankFileLocation;
-        string MyPosFileLocation;
+ 
         string InvoiceFileLocation;
         public List<string> Header = new List<string>()
         {"Verzio", "Naplo","KeltAkod", "Teljbevsor", "AfadNetto", "Fhatafa", "FmodBrt", "BizNettod", "MszAfad", "PnevBrtd", "PirszNfok", "PvarNtk", "PcimAfok", "AdoszAtk", "MegjBfok", "DnemBtk", "arfolyam", "kadomsz", "evaonyt", "okodonys", "kiegybiz","TAFADAT" };
@@ -33,6 +33,7 @@ namespace GnuConvert.Services.IO
             BankFileLocation = bankFileLocation;
             ConvertedFileLocation = convertedFileLocation;
             ExceptionInvoiceFileLocation = exceptionInvoiceFileLocation;
+         
         }
         public Bank LoadBank() {
             if (BankFileLocation == null) {
@@ -65,13 +66,13 @@ namespace GnuConvert.Services.IO
         }
 
         public MyPosData LoadMyPos() {
-            if (MyPosFileLocation == null)
+            if (BankFileLocation == null)
             {
                 //Hibaat kell kezelni
                 return null;
             }
             else {
-                List<string> myposData = new FileReader().FileReaderFunction(MyPosFileLocation);
+                List<string> myposData = new FileReader().FileReaderFunction(BankFileLocation);
                 List<MyPosRow> myposItems = new ProcessMyPosData().Parse(myposData);
                 MyPosData myPos = new MyPosData(myposItems);
                 return myPos;

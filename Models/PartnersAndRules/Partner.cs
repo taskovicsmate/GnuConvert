@@ -14,13 +14,16 @@ namespace GnuConvert.Models.PartnersAndRules
         public string Id { get; set; } = "";
         public List<Rule> Rules { get; set; } = new List<Rule>();
 
-        public Partner(string name, string id,List<Rule> rules) { 
-                Name = name; Id = id; Rules = rules;
-        
+        public ConversionPipeline Pipelines { get; set; }
+
+        public Partner() { }
+        public Partner(string name, string id,List<Rule> rules, ConversionPipeline pipelines) { 
+                Name = name; Id = id; Rules = rules; Pipelines = pipelines;
+
         }
         [JsonConstructor]
-        public Partner(string name, string id) { 
-            Name = name; Id = id; 
+        public Partner(string name, string id, ConversionPipeline pipelines) { 
+            Name = name; Id = id; Pipelines = pipelines;
         }
         public void AddRule(Rule r) 
         { 
@@ -35,7 +38,7 @@ namespace GnuConvert.Models.PartnersAndRules
         public List <Rule> GetRules() { return Rules; }
         public static Partner CreateDefault(string partnerId)
         {
-            return new Partner("Default Partner", partnerId, new List<Rule>());
+            return new Partner("Default Partner", partnerId, new List<Rule>(),new ConversionPipeline());
         }
     }
 }

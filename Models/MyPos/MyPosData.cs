@@ -8,18 +8,18 @@ namespace GnuConvert.Models.MyPos
 {
     public class MyPosData
     {
-        public List<MyPosRow> myPosRows { get; set; }
+        public List<MyPosRow> Items { get; set; }
         public MyPosData()
         {
-            myPosRows = new List<MyPosRow>();
+            Items = new List<MyPosRow>();
         }
         public MyPosData(List<MyPosRow> rows)
         {
-            myPosRows = rows;
+            Items = rows;
         }
         public void AddRow(MyPosRow row)
         {
-            myPosRows.Add(row);
+            Items.Add(row);
         }
 
     }

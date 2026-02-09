@@ -1,12 +1,17 @@
 ﻿<UserControl x:Class="GnuConvert.Views.WebshopView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-              Height="Auto" Width="Auto">
+              Height="Auto" Width="Auto"
+              DataContext="{DynamicResource WebshopVM}">
     <Grid Background="#FFF5F3EE" Width="auto" MinWidth="1000" MinHeight="1000" Height="700">
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,100">
             <TextBlock Text="Ez a felület a Webshop könyvelést fogja segíteni!" FontSize="26" FontWeight="Bold" Margin="0,0,0,20" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
             <TextBlock Text="Röviden és egyszerűen megmutatj a program működését." 
         FontSize="16" TextAlignment="Center" Margin="0,0,0,30" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
+            <TextBlock FontSize="16"
+           Text="{Binding CurrentSubView}"
+           Margin="20"
+           Panel.ZIndex="999"/>
 
         </StackPanel>
         <StackPanel VerticalAlignment="Top">
@@ -52,12 +57,13 @@
                        IsHitTestVisible="False" Focusable="False"/>
                     <CheckBox x:Name="checkBox2" HorizontalAlignment="Left" Margin="333,160,0,0" VerticalAlignment="Top" IsChecked="{Binding IsBankFileChosen}"
                        IsHitTestVisible="False" Focusable="False"/>
+                 
 
                 </Grid>
             </Border>
         </StackPanel>
 
-        <ContentControl Content="{Binding CurrentSubView}"  RenderTransformOrigin="0.5,0.5" Panel.ZIndex="7" DockPanel.Dock="Top" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" />
+        <ContentControl Content="{Binding CurrentSubView}"  RenderTransformOrigin="0.5,0.5" Panel.ZIndex="14" DockPanel.Dock="Top" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" MinWidth="100" MinHeight="100" />
     </Grid>
 
 </UserControl>

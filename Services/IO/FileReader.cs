@@ -21,6 +21,11 @@ namespace GnuConvert.Services.IO
                 using StreamReader Reader = new StreamReader(FileLocation, Encoding.GetEncoding("ISO-8859-2"));//1252
 
                 var fileHeader = Reader.ReadLine();
+                while (fileHeader == null || fileHeader.ToCharArray().Length < 50)
+                {
+                    fileHeader = Reader.ReadLine();
+                }
+
                 while (!Reader.EndOfStream)
                 {
 
