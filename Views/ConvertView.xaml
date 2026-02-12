@@ -14,14 +14,19 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid Background="#FFF5F3EE" Width="auto" MinWidth="1000" MinHeight="1000" Height="700">
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,100">
-            <TextBlock Text="Ez a felület a bank könyvelést fogja segíteni!" FontSize="26" FontWeight="Bold" Margin="0,0,0,20" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
-            <TextBlock Text="Röviden és egyszerűen megmutatj a program működését." 
-           FontSize="16" TextAlignment="Center" Margin="0,0,0,30" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,0">
+            <Border Style="{StaticResource Card}" Padding="18,18,18,18">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="18"
+              ShadowDepth="2"
+              Opacity="0.18"/>
+                </Border.Effect>
+                <TextBlock Text="Bank konvertálás gyorsan és egyszerűen!" FontSize="26" FontWeight="Bold" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
+            </Border>
 
         </StackPanel>
         <StackPanel VerticalAlignment="Top">
-            <Border BorderBrush="#FF7A8F7A" BorderThickness="0,3,0,3" Margin="0,200,0,0" Padding="0,10,0,10">
+            <Border BorderBrush="#FF7A8F7A" BorderThickness="0,3,0,3" Margin="0,150,0,0" Padding="0,10,0,10">
                 <Grid >
                     <Label x:Name="label2" Content="Partner választás" Panel.ZIndex="5" SnapsToDevicePixels="True" Margin="30,-47,0,0" AllowDrop="True" FontFamily="Century Schoolbook" VerticalAlignment="Top" FontSize="20" FontWeight="Bold" Foreground="#FFF5F3EE" Background="#FF7A8F7A" HorizontalAlignment="Left"/>
                     <Label x:Name="label1" Content="Válasszon egy partnert:" HorizontalAlignment="Left" Panel.ZIndex="5" SnapsToDevicePixels="True" Margin="350,0,0,0" AllowDrop="True" FontFamily="Century Schoolbook" VerticalAlignment="Center" Foreground="#FF4D4335" FontSize="14" FontWeight="Bold"/>
@@ -34,7 +39,7 @@
             </Border>
         </StackPanel>
         <StackPanel Orientation="Vertical" Grid.Row="4" Margin="0,200,0,0" MinWidth="1000" MinHeight="1000" >
-            <Border BorderBrush="#FF7A8F7A" BorderThickness="0,3,0,3" Margin="0,150,0,0" Padding="0,30,0,30">
+            <Border BorderBrush="#FF7A8F7A" BorderThickness="0,3,0,3" Margin="0,100,0,0" Padding="0,30,0,30" >
                 <Grid>
 
                     <Label x:Name="label3" Content="Konvertálás" Panel.ZIndex="5" SnapsToDevicePixels="True" Margin="30,-67,0,0" AllowDrop="True" FontFamily="Century Schoolbook" VerticalAlignment="Top" FontSize="20" FontWeight="Bold" Foreground="#FFF5F3EE" Background="#FF7A8F7A" HorizontalAlignment="Left"/>
@@ -52,6 +57,10 @@
 
                 </Grid>
             </Border>
+            <TextBlock Text="Előszőr válazd ki vagy hozd létre a használni kívánt partnert." FontSize="16" TextAlignment="Center" Margin="0,30,0,10" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
+            <TextBlock Text="Utána írd be a banki fökönyvi számot!" FontSize="16" TextAlignment="Center" Margin="0,0,0,10" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
+            <TextBlock Text="Majd válazd ki a pénzügyi nyilvántartást és a kiexportált bankot." FontSize="16" TextAlignment="Center" Margin="0,0,0,10" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
+            <TextBlock Text="Nyomj rá a konvertálás gombra és várd meg míg befejezi a konvertálást a program!" FontSize="16" TextAlignment="Center" Margin="0,0,0,10" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
         </StackPanel>
        
                 <ContentControl Content="{Binding CurrentSubView}"  RenderTransformOrigin="0.5,0.5" Panel.ZIndex="7" DockPanel.Dock="Top" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" />

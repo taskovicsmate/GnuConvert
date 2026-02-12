@@ -1,14 +1,5 @@
-﻿using GnuConvert.Elözőprojekt;
+﻿
 using GnuConvert.Models.MyPos;
-using GnuConvert.Models.Nyilvántartás;
-using MahApps.Metro.Controls;
-using NPOI.SS.Formula.Functions;
-using Org.BouncyCastle.Asn1.X509;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GnuConvert.Services.DataParsers
 {

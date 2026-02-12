@@ -20,8 +20,12 @@ namespace GnuConvert.Services.GlAssignmentService
         public string PredictAccount(string description,Partner partner)
         {
 
-            string text = TextFormatting.Normalize(description);
 
+            string text = TextFormatting.Normalize(description);
+           
+            var textParts = text.Split(' ');
+            
+            
             var scores = new Dictionary<string, int>();
 
             foreach (var rule in partner.Rules)
@@ -33,6 +37,21 @@ namespace GnuConvert.Services.GlAssignmentService
 
                     scores[rule.Account] += rule.Score;
                 }
+                //else
+                //{
+                //    foreach (var part in textParts)
+                //    {
+
+                //        if (SearchFunctions.SzovegKereso(part, rule.Keyword, 0, 0))
+                //        {
+                //            if (!scores.ContainsKey(rule.Account))
+                //                scores[rule.Account] = 0;
+
+                //            scores[rule.Account] += rule.Score;
+                //        }
+                //    }
+
+                //}
             }
 
             if (scores.Count == 0)

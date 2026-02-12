@@ -1,4 +1,5 @@
-﻿using GnuConvert.Models.Bank;
+﻿using GnuConvert.BankImport;
+using GnuConvert.Models.Bank;
 using GnuConvert.Models.FokonyvSzamok;
 using GnuConvert.Models.Nyilvántartás;
 using GnuConvert.Models.PartnersAndRules;
@@ -19,7 +20,7 @@ namespace GnuConvert.Services.Conversion
     public class MainConvertingLogic
     {
         FileHandler _fileHandler;
-        Bank _bank;
+        BankImportResult _bank;
         Invoice _invoice;
         DirectMatch _directMatch = new DirectMatch();
         InDirectMatch _inDirectMatch = new InDirectMatch();
@@ -67,21 +68,23 @@ namespace GnuConvert.Services.Conversion
                 ?? throw new ArgumentNullException(nameof(invoiceFileLocation));
 
 
-            _bank = new Bank();
+            _bank = new BankImportResult();
             _invoice = new Invoice();
             _partner = p;
             _fileHandler = new FileHandler(_exceptionBankFileLocation, _convertedBankFileLocation, _bankFileLocation, _invoiceFileLocation);
         }
         public MainConvertingLogic()
         {
-            _bank = new Bank();
+            _bank = new BankImportResult();
             _invoice = new Invoice();
 
         }
 
         public void LoadData()
         {
-            _bank = _fileHandler.LoadBank();
+            var importer = new BankImporter(BankDefinitions.All);
+             _bank = importer.Import(_partner.Pipelines.ToString(), _bankFileLocation);
+           // _bank = _fileHandler.LoadBank();
             _invoice = _fileHandler.LoadInvoice();
         }
 
@@ -97,15 +100,15 @@ namespace GnuConvert.Services.Conversion
 
             List<string> Data = new List<string>();
 
-            var partnerNevek = _bank.Items.Select(i => i.PartnerNeve).ToList();
-            var datumok = _bank.Items.Select(i => i.Kelt).ToList();
-            var fizetesModok = _bank.Items.Select(i => i.TranzakcioTipusa).ToList();
-            var Kozlemenyek = _bank.Items.Select(i => i.Kozlemeny).ToList();
-            var Osszegek = _bank.Items.Select(i => i.Osszeg).ToList();
+            var partnerNevek = _bank.Transactions.Select(i => i.PartnerNeve).ToList();
+            var datumok = _bank.Transactions.Select(i => i.Kelt).ToList();
+            var fizetesModok = _bank.Transactions.Select(i => i.TranzakcioTipusa).ToList();
+            var Kozlemenyek = _bank.Transactions.Select(i => i.Kozlemeny).ToList();
+            var Osszegek = _bank.Transactions.Select(i => i.Osszeg).ToList();
 
             var counter = 0;
 
-            for (int i = 0; i < _bank.Items.Count; i++)
+            for (int i = 0; i < _bank.Transactions.Count; i++)
             {
                 System.Diagnostics.Debug.WriteLine($"A {i + 1}. tétel következik!");
                 if (float.Parse(Osszegek[i], new CultureInfo("hu-HU")) < 0)
