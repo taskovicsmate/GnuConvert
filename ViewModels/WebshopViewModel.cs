@@ -239,7 +239,7 @@ namespace GnuConvert.ViewModels
             Partners.Clear();
             foreach (var p in _rulesStore.LoadAll())
             {
-                if (p.Pipelines==ConversionPipeline.Webshop)
+                if (p.Pipelines==ConversionPipeline.MyPos)
                 {
                 Partners.Add(p);
                     

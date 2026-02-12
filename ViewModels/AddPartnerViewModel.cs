@@ -117,8 +117,12 @@ namespace GnuConvert.ViewModels
             ExistingPartners = partners;
             _close = onClose;
             _load = onSaved;
-            BankOptions.Add(ConversionPipeline.Bank);
-            BankOptions.Add(ConversionPipeline.Webshop);
+            BankOptions.Add(ConversionPipeline.Unicredit);
+            BankOptions.Add(ConversionPipeline.Otp);
+           // BankOptions.Add(ConversionPipeline.Revolut);
+           // BankOptions.Add(ConversionPipeline.Erste);
+           // BankOptions.Add(ConversionPipeline.Kh);
+            BankOptions.Add(ConversionPipeline.MyPos);
             Rows.Add(new PartnerRuleRowViewModel("Példa","BANKKOLTSEG", "245","5322"));
             SelectBankFileCommand = new RelayCommand(SelectBankFile);
             SelectInvoiceFileCommand = new RelayCommand(SelectInvoiceFile);

@@ -66,7 +66,7 @@
                       ColumnWidth="*"
                       ScrollViewer.VerticalScrollBarVisibility="Auto"
                       ScrollViewer.CanContentScroll="True"
-                      Margin="10,0,10,-50" Height="500" VerticalAlignment="Top">
+                      Margin="10,0,10,-50" Height="480" VerticalAlignment="Top">
 
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Partner" Width="220" Binding="{Binding PartnerName}" IsReadOnly="True"/>

@@ -19,9 +19,9 @@ namespace GnuConvert.BankImport
             _defs = definitions.ToDictionary(d => d.Id, StringComparer.OrdinalIgnoreCase);
         }
 
-        public ImportResult Import(string bankId, string filePath)
+        public BankImportResult Import(string bankId, string filePath)
         {
-            var result = new ImportResult();
+            var result = new BankImportResult();
 
             if (!_defs.TryGetValue(bankId, out var def))
             {
@@ -202,7 +202,7 @@ namespace GnuConvert.BankImport
         string[] row,
         Dictionary<string, int> headerIndex,
         BankDefinition def,
-        ImportResult result,
+        BankImportResult result,
         string bankId,
         int rowIndex,
         string fieldName)

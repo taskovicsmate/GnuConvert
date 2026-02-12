@@ -240,7 +240,7 @@ namespace GnuConvert.ViewModels
             Partners.Clear();
             foreach (var p in _rulesStore.LoadAll())
             {
-                if (p.Pipelines == ConversionPipeline.Bank)
+                if (p.Pipelines == ConversionPipeline.Unicredit|| p.Pipelines == ConversionPipeline.Otp||p.Pipelines == ConversionPipeline.Erste|| p.Pipelines == ConversionPipeline.Kh|| p.Pipelines == ConversionPipeline.Revolut)
                 {
                     Partners.Add(p);
 

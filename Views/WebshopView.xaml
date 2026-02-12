@@ -4,18 +4,20 @@
               Height="Auto" Width="Auto"
               DataContext="{DynamicResource WebshopVM}">
     <Grid Background="#FFF5F3EE" Width="auto" MinWidth="1000" MinHeight="1000" Height="700">
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,100">
-            <TextBlock Text="Ez a felület a Webshop könyvelést fogja segíteni!" FontSize="26" FontWeight="Bold" Margin="0,0,0,20" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
-            <TextBlock Text="Röviden és egyszerűen megmutatj a program működését." 
-        FontSize="16" TextAlignment="Center" Margin="0,0,0,30" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
-            <TextBlock FontSize="16"
-           Text="{Binding CurrentSubView}"
-           Margin="20"
-           Panel.ZIndex="999"/>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,0">
+            <Border Style="{StaticResource Card}" Padding="18,18,18,18">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="18"
+                          ShadowDepth="2"
+                          Opacity="0.18"/>
+                </Border.Effect>
+                <TextBlock Text="Mypos konvertálás gyorsan egyszerűen" FontSize="26" FontWeight="Bold" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
+                
+            </Border>
 
         </StackPanel>
         <StackPanel VerticalAlignment="Top">
-            <Border BorderThickness="0,3,0,3" Margin="0,200,0,0" Padding="0,10,0,10" Panel.ZIndex="3">
+            <Border BorderThickness="0,3,0,3" Margin="0,150,0,0" Padding="0,10,0,10" Panel.ZIndex="3">
                 <Border.BorderBrush>
                     <SolidColorBrush Color="#FF2F4A36" Opacity="0.8"/>
                 </Border.BorderBrush>
@@ -35,12 +37,12 @@
             </Border>
         </StackPanel>
         <StackPanel Orientation="Vertical" Grid.Row="4" Margin="0,200,0,0" MinWidth="1000" MinHeight="1000" >
-            <Border BorderThickness="0,3,0,3" Margin="0,150,0,0" Padding="0,30,0,30" Panel.ZIndex="5">
+            <Border BorderThickness="0,3,0,3" Margin="0,100,0,0" Padding="0,30,0,30" Panel.ZIndex="5">
                 <Border.BorderBrush>
                     <SolidColorBrush Color="#FF2F4A36" Opacity="0.8"/>
                 </Border.BorderBrush>
                 <Grid>
-
+                    
                     <Label x:Name="label3" Content="Webshop Konvertálás" SnapsToDevicePixels="True" Margin="30,-67,0,0" AllowDrop="True" FontFamily="Century Schoolbook" VerticalAlignment="Top" FontSize="20" FontWeight="Bold" Foreground="#FFF5F3EE" HorizontalAlignment="Left">
                         <Label.Background>
                             <SolidColorBrush Color="#FF2F4A36" Opacity="0.8"/>
@@ -61,6 +63,10 @@
 
                 </Grid>
             </Border>
+            <TextBlock Text="Előszőr válazd ki vagy hozd létre a használni kívánt partnert." FontSize="16" TextAlignment="Center" Margin="0,30,0,10" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
+            <TextBlock Text="Utána írd be a banki fökönyvi számot!" FontSize="16" TextAlignment="Center" Margin="0,0,0,10" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
+            <TextBlock Text="Majd válazd ki a pénzügyi nyilvántartást és a kiexportált bankot." FontSize="16" TextAlignment="Center" Margin="0,0,0,10" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
+            <TextBlock Text="Nyomj rá a konvertálás gombra és várd meg míg befejezi a konvertálást a program!" FontSize="16" TextAlignment="Center" Margin="0,0,0,10" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
         </StackPanel>
 
         <ContentControl Content="{Binding CurrentSubView}"  RenderTransformOrigin="0.5,0.5" Panel.ZIndex="14" DockPanel.Dock="Top" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" MinWidth="100" MinHeight="100" />

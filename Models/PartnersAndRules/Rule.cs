@@ -16,7 +16,7 @@ namespace GnuConvert.Models.PartnersAndRules
         [JsonConstructor]
         public Rule(string keyword, string account, int score)
         {
-            Keyword = keyword;
+            Keyword = keyword.Trim();
             Account = account;
             Score = score;
         }

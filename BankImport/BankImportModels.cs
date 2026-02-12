@@ -29,7 +29,7 @@ namespace GnuConvert.BankImport
         int RowIndex,
         string? Field = null
     );
-    public sealed class ImportResult
+    public sealed class BankImportResult
     {
         public List<BankTransaction> Transactions { get; } = new();
         public List<ImportIssue> Issues { get; } = new();

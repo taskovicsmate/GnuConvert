@@ -1,4 +1,5 @@
-﻿using GnuConvert.Models.Bank;
+﻿using GnuConvert.BankImport;
+using GnuConvert.Models.Bank;
 using GnuConvert.Models.MyPos;
 using GnuConvert.Models.Nyilvántartás;
 using GnuConvert.Models.PartnersAndRules;
@@ -17,7 +18,7 @@ namespace GnuConvert.Services.GlAssignmentService
         
         List<PartnerRuleRowViewModel> partnerRules = new List<PartnerRuleRowViewModel>();
         FileHandler _fileHandler;
-        Bank _bankTMP = new Bank();
+        BankImportResult _bankTMP = new BankImportResult();
         MyPosData _myPosTMP = new MyPosData();
         Invoice _invoiceTMP = new Invoice();
         DirectMatch _directMatch = new DirectMatch();
@@ -37,9 +38,11 @@ namespace GnuConvert.Services.GlAssignmentService
      
             _fileHandler = new FileHandler("", "", BankFileLocation, InvoiceFileLocation);
         }
-        public void LoadBankData()
+        public void LoadBankData(string BankDefinition)
         {
-            _bankTMP = _fileHandler.LoadBank();
+            var importer = new BankImporter(BankDefinitions.All);
+            _bankTMP = importer.Import(BankDefinition, BankFileLocation);
+           // _bankTMP = _fileHandler.LoadBank();
             _invoiceTMP = _fileHandler.LoadInvoice();
         }
         public void RunRuleCreation(ConversionPipeline SelectedPipeline)
@@ -47,17 +50,16 @@ namespace GnuConvert.Services.GlAssignmentService
          
             switch (SelectedPipeline)
             {
-                case ConversionPipeline.Bank:
-                    LoadBankData();
-                     BankRules();
-                    break;
-
-                case ConversionPipeline.Webshop:
+            
+                case ConversionPipeline.MyPos:
                     LoadMyposData();
                     MyPosRules();
                     break;
+                default:
+                    LoadBankData(SelectedPipeline.ToString());
+                    BankRules();
+                    break;
 
-              
             }
         }
         public void LoadMyposData()
@@ -122,13 +124,13 @@ namespace GnuConvert.Services.GlAssignmentService
         }
         public void BankRules()
         {
-            var partnerNevek = _bankTMP.Items.Select(i => i.PartnerNeve).ToList();
-            var datumok = _bankTMP.Items.Select(i => i.Kelt).ToList();
-            var fizetesModok = _bankTMP.Items.Select(i => i.TranzakcioTipusa).ToList();
-            var Kozlemenyek = _bankTMP.Items.Select(i => i.Kozlemeny).ToList();
-            var Osszegek = _bankTMP.Items.Select(i => i.Osszeg).ToList();
+            var partnerNevek = _bankTMP.Transactions.Select(i => i.PartnerNeve).ToList();
+            var datumok = _bankTMP.Transactions.Select(i => i.Kelt).ToList();
+            var fizetesModok = _bankTMP.Transactions.Select(i => i.TranzakcioTipusa).ToList();
+            var Kozlemenyek = _bankTMP.Transactions.Select(i => i.Kozlemeny).ToList();
+            var Osszegek = _bankTMP.Transactions.Select(i => i.Osszeg).ToList();
 
-            RuleMaking(_bankTMP.Items.Count, Osszegek, Kozlemenyek, partnerNevek, datumok);
+            RuleMaking(_bankTMP.Transactions.Count, Osszegek, Kozlemenyek, partnerNevek, datumok);
 
         }
         public void MyPosRules()
@@ -162,22 +164,34 @@ namespace GnuConvert.Services.GlAssignmentService
 
                 string kozlemeny = TextFormatting.Normalize(item.Kozlemeny);
                 string partnernName = TextFormatting.Normalize(item.PartnerName);
-                if (kozlemeny == "" || kozlemeny == null)
+
+                if (kozlemeny == "" || kozlemeny == null||KozlemenyFound(item.Kozlemeny))
                 {
+
                     rule = new Rule(partnernName, item.UserLedger, ScoreCounting(item.Kozlemeny));
+                }
+                else
+                {
+                    rule = new Rule(kozlemeny, item.UserLedger, ScoreCounting(item.Kozlemeny));
 
                 }
-                else { 
-                     rule = new Rule(kozlemeny, item.UserLedger, ScoreCounting(item.Kozlemeny));
-                
-                }
-               
+
                 rules.Add(rule);
             }
             var unique = rules.GroupBy(r => (r.Keyword, r.Account)).Select(g => g.First()).ToList();
             return unique ;
         }
-       
+        public bool KozlemenyFound(string koz) { 
+           bool result = false; 
+            for (int i = 0; i < partnerRules.Count; i++) 
+            { 
+                if (partnerRules[i].Kozlemeny == koz) {
+                    result = true; 
+                    break;
+                }
+
+            } return result;
+        }
         public int ScoreCounting(string kozlemeny) {
             int counter = 0;
             for (int i = 0; i < partnerRules.Count; i++)

@@ -68,14 +68,14 @@ namespace GnuConvert.BankImport
           Szamlaszam: new FieldRef(Index:0),
           Devizane: new FieldRef(Index: 1),
           Kelt: new FieldRef(Index:2),
-          TranzakcioTipusa: new FieldRef(Index: 4),
-          PartnerNeve: new FieldRef(Index: 5),
-          PartnerSzamlaszama: new FieldRef(Index: 6),
-          Osszeg: new FieldRef(Index: 7),
-          Kozlemeny: new FieldRef(Index: 8)
+          TranzakcioTipusa: new FieldRef(Index: 3),
+          PartnerNeve: new FieldRef(Index: 4),
+          PartnerSzamlaszama: new FieldRef(Index: 5),
+          Osszeg: new FieldRef(Index: 6),
+          Kozlemeny: new FieldRef(Index: 7) 
       )
   );
 
-        public static IReadOnlyList<BankDefinition> All => new[] { Otp };
+        public static IReadOnlyList<BankDefinition> All => new[] { Otp, Unicredit };
     }
 }
