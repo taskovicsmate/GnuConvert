@@ -3,6 +3,7 @@ using GnuConvert.Services.Settings;
 using GnuConvert.Services.Storage;
 using System.Configuration;
 using System.Data;
+using System.IO;
 using System.Text;
 using System.Windows;
 
@@ -26,6 +27,14 @@ namespace GnuConvert
             PartnerRulesStore = new PartnerRulesStore();
 
             Settings = SettingsStore.LoadOrCreateDefault();
+            var path = AppPaths.UserLoginPath();
+
+            if (!File.Exists(path))
+            {
+                File.WriteAllText(path, "{}", System.Text.Encoding.UTF8); // vagy default objektum json
+            }
+
+            var json = File.ReadAllText(path, System.Text.Encoding.UTF8);
 
             base.OnStartup(e);
         }

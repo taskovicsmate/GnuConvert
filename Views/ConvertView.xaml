@@ -5,15 +5,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls" mc:Ignorable="av"
              x:Class="GnuConvert.Views.ConvertView"
-             Height="auto" Width="Auto"
-            xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-               DataContext="{DynamicResource ConvertVM}">
+            xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
+    <!--DataContext="{DynamicResource ConvertVM}"-->
+   
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding ViewLoadedCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <Grid Background="#FFF5F3EE" Width="auto" MinWidth="1000" MinHeight="1000" Height="700">
+    <Grid Background="#FFF5F3EE">
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,0">
             <Border Style="{StaticResource Card}" Padding="18,18,18,18">
                 <Border.Effect>
@@ -57,9 +57,9 @@
 
                 </Grid>
             </Border>
-            <TextBlock Text="Előszőr válazd ki vagy hozd létre a használni kívánt partnert." FontSize="16" TextAlignment="Center" Margin="0,30,0,10" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
+            <TextBlock Text="Előszőr válaszd ki vagy hozd létre a használni kívánt partnert." FontSize="16" TextAlignment="Center" Margin="0,30,0,10" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
             <TextBlock Text="Utána írd be a banki fökönyvi számot!" FontSize="16" TextAlignment="Center" Margin="0,0,0,10" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
-            <TextBlock Text="Majd válazd ki a pénzügyi nyilvántartást és a kiexportált bankot." FontSize="16" TextAlignment="Center" Margin="0,0,0,10" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
+            <TextBlock Text="Majd válaszd ki a pénzügyi nyilvántartást és a kiexportált bankot." FontSize="16" TextAlignment="Center" Margin="0,0,0,10" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
             <TextBlock Text="Nyomj rá a konvertálás gombra és várd meg míg befejezi a konvertálást a program!" FontSize="16" TextAlignment="Center" Margin="0,0,0,10" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
         </StackPanel>
        

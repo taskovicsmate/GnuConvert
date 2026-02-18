@@ -5,10 +5,14 @@
              xmlns:v="clr-namespace:GnuConvert.Views"
              StartupUri="Views/LoginView.xaml">
     <Application.Resources>
-        <vm:KonyveloknekSettingsViewModel x:Key="FokonyvVM"/>
+        <Style x:Key="Card" TargetType="Border">
+            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#E2D8CC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="14"/>
+            <Setter Property="Padding" Value="18"/>
+        </Style>
         
-       <vm:ConvertViewModel x:Key="ConvertVM"/>
-        <vm:WebshopViewModel x:Key="WebshopVM"/>
         <DataTemplate DataType="{x:Type vm:ConvertViewModel}">
             <v:ConvertView />
         </DataTemplate>
@@ -45,13 +49,10 @@
         <!--<DataTemplate DataType="{x:Type vm:ViewSettingsViewModel}">
             <v:ViewSettingsView />
         </DataTemplate>-->
-        <Style x:Key="Card" TargetType="Border">
-            <Setter Property="Background" Value="#FFFFFF"/>
-            <Setter Property="BorderBrush" Value="#E2D8CC"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="14"/>
-            <Setter Property="Padding" Value="18"/>
-        </Style>
+        <!--<vm:KonyveloknekSettingsViewModel x:Key="FokonyvVM"/>
+        
+       <vm:ConvertViewModel x:Key="ConvertVM"/>
+        <vm:WebshopViewModel x:Key="WebshopVM"/>-->
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">
                 <Setter.Value>

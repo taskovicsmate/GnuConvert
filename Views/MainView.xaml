@@ -7,6 +7,7 @@
         xmlns:vm="clr-namespace:GnuConvert.ViewModels"
         xmlns:v="clr-namespace:GnuConvert.Views"
         Title="Gnu Convert" Height="auto" Width="auto" Background="#FFCABA9C">
+
     <Window.Resources>
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">

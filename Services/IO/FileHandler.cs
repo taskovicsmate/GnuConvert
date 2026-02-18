@@ -35,20 +35,7 @@ namespace GnuConvert.Services.IO
             ExceptionInvoiceFileLocation = exceptionInvoiceFileLocation;
          
         }
-        public Bank LoadBank() {
-            if (BankFileLocation == null) {
-                // MessageBox.Show("Nincs megadva bank fájl helye","Hiba");
-                //hiát kell kezelni
-                return null;
-            }
-            else {
-                List<string> bankData = new FileReader().FileReaderFunction(BankFileLocation);
-                List<Items> bankItems = new ProcessBankData().Parse(bankData);
-                Bank bank = new Bank(bankItems);
-                return bank;
-            }
 
-        }
 
         public Invoice LoadInvoice() {
             if (InvoiceFileLocation == null) {
