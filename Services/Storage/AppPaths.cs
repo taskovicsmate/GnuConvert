@@ -24,5 +24,14 @@ namespace GnuConvert.Services.Storage
               Path.Combine(PartnersRoot, "webshoppartners.json");
         public static string PartnerRulesFile(string partnerId) =>
             Path.Combine(PartnerDir(partnerId), "rules.json");
+        public static string AppDir()
+        {
+            var baseDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var dir = Path.Combine(baseDir, "GnuConvert");
+            Directory.CreateDirectory(dir);
+            return dir;
+        }
+
+        public static string UserLoginPath() => Path.Combine(AppDir(), "UserLogin.json");
     }
 }
