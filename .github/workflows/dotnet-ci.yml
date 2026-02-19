@@ -20,10 +20,10 @@ jobs:
           dotnet-version: 9.0.x
 
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore ./GnuConvert.sln
 
       - name: Build (Release)
-        run: dotnet build --no-restore -c Release
+        run: dotnet build ./GnuConvert.sln --configuration Release --no-restore
 
       - name: Test (Release)
-        run: dotnet test --no-build -c Release
+        run: dotnet test ./GnuConvert.sln --configuration Release --no-build
