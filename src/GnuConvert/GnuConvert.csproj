@@ -10,14 +10,17 @@
 
   <ItemGroup>
     <Compile Remove="Helpers\**" />
+    <Compile Remove="tests\**" />
     <EmbeddedResource Remove="Helpers\**" />
+    <EmbeddedResource Remove="tests\**" />
     <None Remove="Helpers\**" />
+    <None Remove="tests\**" />
     <Page Remove="Helpers\**" />
+    <Page Remove="tests\**" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="Views\a legcukibbGNU.png" />
-    <None Remove="Views\istockphoto-1203186042-612x612.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -44,12 +47,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Views\a legcukibbGNU.png" />
-    <Resource Include="Views\istockphoto-1203186042-612x612.jpg" />
+    <Folder Include="Services\Logging\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\Logging\" />
+    <Resource Include="Views\a legcukibbGNU.png" />
   </ItemGroup>
 
 </Project>

@@ -91,7 +91,7 @@
 
                 <Image x:Name="image" Height="60" Width="100" Source="/Views/a legcukibbGNU.png" Stretch="UniformToFill" IsHitTestVisible="False" Margin="0,10,0,0">
                     <Image.OpacityMask>
-                        <ImageBrush TileMode="None" Stretch="UniformToFill" ImageSource="/Views/a legcukibbGNU.png">
+                        <ImageBrush ImageSource="/Views/a legcukibbGNU.png">
                             <ImageBrush.RelativeTransform>
                                 <TransformGroup>
                                     <ScaleTransform CenterY="0.5" CenterX="0.5"/>
