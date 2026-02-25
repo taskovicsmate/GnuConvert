@@ -1,4 +1,5 @@
 ﻿using GnuConvert.Models.Bank;
+using GnuConvert.Models.ConvertedInvoices;
 using GnuConvert.Models.MyPos;
 using GnuConvert.Models.Nyilvántartás;
 using GnuConvert.Services.DataParsers;
@@ -68,32 +69,29 @@ namespace GnuConvert.Services.IO
 
 
         }
-        public void Write(List<List<string>> IrniFejlecsor, List<List<string>> IrniTetelsor)
+        public void Write(List<ConvertedInvoice> convertedInvoices)
         {
-            List<int> exeptionIndexes = new List<int>();
-            List<int> convertedIndexes = new List<int>();
+          
+            FileWriter fileWriter = new FileWriter();
+            fileWriter.FileHeaderWriter(ConvertedFileLocation, ExceptionInvoiceFileLocation, Header);
 
-            for (int i = 0; i < IrniFejlecsor.Count; i++)
+            for (int i = 0; i < convertedInvoices.Count; i++)
             {
-                if (IrniFejlecsor[i].Last() == "Rossz")
+                if (!convertedInvoices[i].GetIsValid())
                 {
-                    IrniFejlecsor[i].Remove("Rossz");
-                    IrniTetelsor[i].Remove("Rossz");
-                    exeptionIndexes.Add(i);
+                    fileWriter.FileCsvWriter(convertedInvoices[i], ExceptionInvoiceFileLocation);
+                   
+                   
                 }
 
-                if (IrniFejlecsor[i].Last() == "Helyes")
+                if (convertedInvoices[i].GetIsValid())
                 {
-                    IrniFejlecsor[i].Remove("Helyes");
-                    IrniTetelsor[i].Remove("Helyes");
-                    convertedIndexes.Add(i);
+             
+                 fileWriter.FileCsvWriter(convertedInvoices[i], ConvertedFileLocation);
+                    
                 }
 
             }
-            FileWriter fileWriter = new FileWriter();
-            fileWriter.FileHeaderWriter(ConvertedFileLocation, ExceptionInvoiceFileLocation, Header);
-            fileWriter.FileCsvWriter(IrniTetelsor, IrniFejlecsor, ExceptionInvoiceFileLocation,exeptionIndexes);
-            fileWriter.FileCsvWriter(IrniTetelsor, IrniFejlecsor, ConvertedFileLocation, convertedIndexes);
         }
 
     }

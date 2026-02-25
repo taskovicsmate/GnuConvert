@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GnuConvert.Models.ConvertedInvoices;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -35,27 +36,37 @@ namespace GnuConvert.Services.IO
 
         }
       
-        public void FileCsvWriter(List<List<string>> IrniTetelsor, List<List<string>> IrniFejlecsor, string FileLocation, List<int> indexes)
+        public void FileCsvWriter(ConvertedInvoice invoice, string FileLocation)
         {
+            List<string> IrniTetelsor = invoice.GetTetelsor();
+            List<string> IrniFejlecsor = invoice.GetFejlec();
 
             try
             {
                 using FileStream fs = new FileStream(FileLocation, FileMode.Append);
                 using StreamWriter writer = new StreamWriter(fs, Encoding.GetEncoding("ISO-8859-2"), 512, true);
+            writer.WriteLine(string.Join(";", IrniFejlecsor));
+            writer.WriteLine(string.Join(";", IrniTetelsor));
 
-                for (int i = 0; i < IrniFejlecsor.Count; i++)
-                {
-                    if (indexes.Contains(i))
-                    {
+                //for (int i = 0; i < IrniFejlecsor.Count; i++)
+                //{
 
-                        writer.WriteLine(string.Join(";", IrniFejlecsor[i]));
-                        writer.WriteLine(string.Join(";", IrniTetelsor[i]));
-
-
-                    }
+                //    if (i >= IrniTetelsor.Count)
+                //    {
+                //        writer.WriteLine(string.Join(";", IrniFejlecsor[i]));
 
 
-                }
+                //    }
+                //    else { 
+                    
+                    
+                //    }
+
+
+                    
+
+
+                //}
 
             }
             catch (Exception ex)
