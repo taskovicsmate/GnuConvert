@@ -1,19 +1,11 @@
 ﻿using GnuConvert.BankImport;
-using GnuConvert.Models.Bank;
-using GnuConvert.Models.FokonyvSzamok;
 using GnuConvert.Models.Nyilvántartás;
 using GnuConvert.Models.PartnersAndRules;
 using GnuConvert.Services.Conversion.HelpFunctionsforConversion;
-using GnuConvert.Services.GlAssignmentService;
 using GnuConvert.Services.IO;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
-using System.Security.RightsManagement;
-using System.Text;
-using System.Threading.Tasks;
+using System;
+using GnuConvert.Models.ConvertedInvoices;
 
 namespace GnuConvert.Services.Conversion
 {
@@ -36,8 +28,8 @@ namespace GnuConvert.Services.Conversion
         private string _invoiceFileLocation;
         
 
-        private List<List<string>> Fejlec = new List<List<string>>();
-        private List<List<string>> Tetelsor = new List<List<string>>();
+        private List<ConvertedInvoice> _convertedInvoices= new List<ConvertedInvoice>();
+        //private List<List<string>> Tetelsor = new List<List<string>>();
      
         private Dictionary<int, int> AfaKulcsok = new Dictionary<int, int> {
 
@@ -84,7 +76,6 @@ namespace GnuConvert.Services.Conversion
         {
             var importer = new BankImporter(BankDefinitions.All);
              _bank = importer.Import(_partner.Pipelines.ToString(), _bankFileLocation);
-           // _bank = _fileHandler.LoadBank();
             _invoice = _fileHandler.LoadInvoice();
         }
 
@@ -93,7 +84,6 @@ namespace GnuConvert.Services.Conversion
         {
             string predictedFokonyviSzam = "";
             bool found = false;
-            bool Exception = false;
             bool NegativE = false;
             List<string> ReszeredmenyFejlec = new List<string>();
             List<string> ReszeredmenyTetelsor = new List<string>();
@@ -110,6 +100,8 @@ namespace GnuConvert.Services.Conversion
 
             for (int i = 0; i < _bank.Transactions.Count; i++)
             {
+                ConvertFailure faliure = new ConvertFailure();
+                ConvertedInvoice convertedI = new ConvertedInvoice();
                 System.Diagnostics.Debug.WriteLine($"A {i + 1}. tétel következik!");
                 if (float.Parse(Osszegek[i], new CultureInfo("hu-HU")) < 0)
                 {
@@ -125,25 +117,38 @@ namespace GnuConvert.Services.Conversion
                     //1. pontos egyezés keresése.
                     Data = _directMatch.DirectSearch(_invoice, Kozlemenyek[i], Osszegek[i], partnerNevek[i], datumok[i]);
                     if (Data.Count > 0)
+                    {
                         found = true;
+                        convertedI.SetIsValid(true);
+                    }
                 }
                 if (!found)
                 {
                     //2. Ha létezik a számla a megadott adatok alapján akkor arról kigyüjti az adatokat.
-                    Data = _inDirectMatch.InDirectSearch(_invoice, Kozlemenyek[i], Osszegek[i], partnerNevek[i], datumok[i], _directMatch);
-                    if (Data.Count > 0)
+                    (Data, faliure) = _inDirectMatch.InDirectSearch(_invoice, Kozlemenyek[i], Osszegek[i], partnerNevek[i], datumok[i], _directMatch);
+                    if (Data.Count > 0) { 
                         found = true;
+                        convertedI.SetIsValid(true);
+                    }
                 }
                 if (!found)
                 {
                     //3. ha még mindig nincs egyezés akkor történik a fokonyvszám megjósolása mert akkor az nem egy szállító tétel.
-                    predictedFokonyviSzam = _predictMatch.PredictSearch(Kozlemenyek[i], partnerNevek[i],_partner);
+                    predictedFokonyviSzam = _predictMatch.PredictSearch(Kozlemenyek[i], partnerNevek[i], _partner);
+                    if (predictedFokonyviSzam != null)
+                    {
+                        found = true;
+                        convertedI.SetIsValid(true);
+                    }
 
                 }
                 if (predictedFokonyviSzam == null && !found)
                 {
-                    Exception = true;
+                
+                convertedI.SetConvertFailure(faliure);
+                    convertedI.SetIsValid(false);
                     counter++;
+                    System.Diagnostics.Debug.WriteLine($"{convertedI.GetConvertFailure().Details.ToString}");
                     System.Diagnostics.Debug.WriteLine("A tételt nem sikerült beazonosítani!");
 
                 }
@@ -153,28 +158,20 @@ namespace GnuConvert.Services.Conversion
                     found = false;
                 }
 
-                ReszeredmenyTetelsor = TetlsorLoad(Exception, Osszegek[i], Data, NegativE, predictedFokonyviSzam);
-                ReszeredmenyFejlec = FejlecLoad(datumok[i], Data, fizetesModok[i], partnerNevek[i], Kozlemenyek[i]);
+                convertedI.AddTetelsorItems(TetlsorLoad(convertedI.GetIsValid(), Osszegek[i], Data, NegativE, predictedFokonyviSzam));
+                convertedI.AddFejlecItems(FejlecLoad(datumok[i], Data, fizetesModok[i], partnerNevek[i], Kozlemenyek[i]));
+                _convertedInvoices.Add(convertedI);
+                
+                if(!convertedI.GetIsValid())
+                        convertedI.AddsFailureToTetelsor(faliure);
+                //ReszeredmenyFejlec = FejlecLoad(datumok[i], Data, fizetesModok[i], partnerNevek[i], Kozlemenyek[i]);
 
                 // speciális konvertálási beállítás lehetne az hogy pár paraméteréz a konvertálásnka a felhasználó saját igénye szerint tudja változtatni.
 
                 //Kiírások fájlba
 
-                if (Exception == true)
-                {
-                    ReszeredmenyFejlec.Add("Rossz");
-                    Fejlec.Add(ReszeredmenyFejlec.ToList());
-                    Tetelsor.Add(ReszeredmenyTetelsor.ToList());
-
-                    Exception = false;
-                }
-                else
-                {
-                    ReszeredmenyFejlec.Add("Helyes");
-                    Fejlec.Add(ReszeredmenyFejlec.ToList());
-                    Tetelsor.Add(ReszeredmenyTetelsor.ToList());
-
-                }
+             
+               
                 predictedFokonyviSzam = "";
                 NegativE = false;
                 Data.Clear();
@@ -182,12 +179,12 @@ namespace GnuConvert.Services.Conversion
                 ReszeredmenyFejlec.Clear();
             }
 
-            _fileHandler.Write(Fejlec, Tetelsor);
+            _fileHandler.Write(_convertedInvoices);
             System.Diagnostics.Debug.WriteLine("A Konvertálás befejeződött. ->" + counter);
 
         }
 
-        public List<string> TetlsorLoad(bool Exception, string Osszeg, List<string> Data, bool NegativE, string predictedFokonyviSzam)
+        public List<string> TetlsorLoad(bool IsValid, string Osszeg, List<string> Data, bool NegativE, string predictedFokonyviSzam)
         {
             List<string> ReszeredmenyTetelsor = new List<string>();
             ReszeredmenyTetelsor.Add("");
@@ -208,7 +205,7 @@ namespace GnuConvert.Services.Conversion
             ReszeredmenyTetelsor.Add("");
             ReszeredmenyTetelsor.Add("");
             //Tételsor Főkönyvszámok
-            if (!Exception)
+            if (IsValid)
             {
                 if (Data.Count() == 0)
                 {

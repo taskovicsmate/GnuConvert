@@ -1,5 +1,6 @@
 ﻿using GnuConvert.BankImport;
 using GnuConvert.Models.Bank;
+using GnuConvert.Models.ConvertedInvoices;
 using GnuConvert.Models.MyPos;
 using GnuConvert.Models.Nyilvántartás;
 using GnuConvert.Models.PartnersAndRules;
@@ -71,7 +72,7 @@ namespace GnuConvert.Services.GlAssignmentService
         public void RuleMaking(int ItemsNumber, List<string> Osszegek, List<string> Kozlemenyek, List<string> partnerNevek, List<string> datumok) {
             bool found = false;
             bool NegativE = false;
-         
+            ConvertFailure failure = new ConvertFailure();
 
             List<string> Data = new List<string>();
             for (int i = 0; i < ItemsNumber; i++)
@@ -96,7 +97,7 @@ namespace GnuConvert.Services.GlAssignmentService
                 if (!found)
                 {
                     //2. Ha létezik a számla a megadott adatok alapján akkor arról kigyüjti az adatokat.
-                    Data = _inDirectMatch.InDirectSearch(_invoiceTMP, Kozlemenyek[i], Osszegek[i], partnerNevek[i], datumok[i], _directMatch);
+                    (Data,failure) = _inDirectMatch.InDirectSearch(_invoiceTMP, Kozlemenyek[i], Osszegek[i], partnerNevek[i], datumok[i], _directMatch);
                     if (Data.Count > 0)
                         found = true;
                 }

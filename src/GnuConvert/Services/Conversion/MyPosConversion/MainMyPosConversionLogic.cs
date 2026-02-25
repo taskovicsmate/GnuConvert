@@ -2,9 +2,11 @@
 using global::GnuConvert.Models.PartnersAndRules;
 using global::GnuConvert.Services.Conversion.HelpFunctionsforConversion;
 using global::GnuConvert.Services.IO;
+using GnuConvert.Models.ConvertedInvoices;
 using GnuConvert.Models.MyPos;
 using GnuConvert.Models.Nyilvántartás;
 using System.Globalization;
+using static GnuConvert.Models.ConvertedInvoices.ConvertedInvoice;
 namespace GnuConvert.Services.Conversion.MyPosConversion
 {
         public class MainMyPosConversionLogic
@@ -25,9 +27,8 @@ namespace GnuConvert.Services.Conversion.MyPosConversion
             private string _bankFileLocation;
             private string _invoiceFileLocation;
 
-
-            private List<List<string>> Fejlec = new List<List<string>>();
-            private List<List<string>> Tetelsor = new List<List<string>>();
+        private List<ConvertedInvoice> _convertedInvoices = new List<ConvertedInvoice>();
+     
 
             private Dictionary<int, int> AfaKulcsok = new Dictionary<int, int> {
 
@@ -97,8 +98,11 @@ namespace GnuConvert.Services.Conversion.MyPosConversion
                 var counter = 0;
 
                 for (int i = 0; i < _bank.Items.Count; i++)
-                {
-                    System.Diagnostics.Debug.WriteLine($"A {i + 1}. tétel következik!");
+            {
+               ConvertFailure failure = new ConvertFailure();
+                ConvertedInvoice convertedI = new ConvertedInvoice();
+
+                System.Diagnostics.Debug.WriteLine($"A {i + 1}. tétel következik!");
                     if (float.Parse(Osszegek[i], new CultureInfo("hu-HU")) < 0)
                     {
                         NegativE = true;
@@ -117,8 +121,8 @@ namespace GnuConvert.Services.Conversion.MyPosConversion
                     }
                     if (!found)
                     {
-                        //2. Ha létezik a számla a megadott adatok alapján akkor arról kigyüjti az adatokat.
-                        Data = _inDirectMatch.InDirectSearch(_invoice, description[i], Osszegek[i],"", date[i], _directMatch);
+                    //2. Ha létezik a számla a megadott adatok alapján akkor arról kigyüjti az adatokat.
+                    (Data, failure) = _inDirectMatch.InDirectSearch(_invoice, description[i], Osszegek[i],"", date[i], _directMatch);
                         if (Data.Count > 0)
                             found = true;
                     }
@@ -137,8 +141,8 @@ namespace GnuConvert.Services.Conversion.MyPosConversion
                         Exception = true;
                         counter++;
                         System.Diagnostics.Debug.WriteLine("A tételt nem sikerült beazonosítani!");
-                    ReszeredmenyTetelsor = TetlsorLoad(Exception, Osszegek[i], Data, NegativE, predictedFokonyviSzam);
-                    ReszeredmenyFejlec = FejlecLoad(date[i], Data, transactionType[i], "Hibás", description[i]);
+                    convertedI.AddTetelsorItems(TetlsorLoad(Exception, Osszegek[i], Data, NegativE, predictedFokonyviSzam));
+                    convertedI.AddFejlecItems(FejlecLoad(date[i], Data, transactionType[i], "Hibás", description[i]));
 
                 }
                     else
@@ -149,42 +153,41 @@ namespace GnuConvert.Services.Conversion.MyPosConversion
 
                 if (Data.Count > 0)
                 {
-                    ReszeredmenyTetelsor = TetlsorLoad(Exception, Osszegek[i], Data, NegativE, predictedFokonyviSzam);
-                    ReszeredmenyFejlec = FejlecLoad(date[i], Data, transactionType[i], Data[3], description[i]);
+                    convertedI.AddTetelsorItems(TetlsorLoad(Exception, Osszegek[i], Data, NegativE, predictedFokonyviSzam));
+                    convertedI.AddFejlecItems(FejlecLoad(date[i], Data, transactionType[i], Data[3], description[i]));
 
                 }
                 else {
-                    ReszeredmenyTetelsor = TetlsorLoad(Exception, Osszegek[i], Data, NegativE, predictedFokonyviSzam);
-                    ReszeredmenyFejlec = FejlecLoad(date[i], Data, transactionType[i], "", description[i]);
+                    convertedI.AddTetelsorItems(TetlsorLoad(Exception, Osszegek[i], Data, NegativE, predictedFokonyviSzam));
+                    convertedI.AddFejlecItems(FejlecLoad(date[i], Data, transactionType[i], "", description[i]));
                 }
-                    // speciális konvertálási beállítás lehetne az hogy pár paraméteréz a konvertálásnka a felhasználó saját igénye szerint tudja változtatni.
+                // speciális konvertálási beállítás lehetne az hogy pár paraméteréz a konvertálásnka a felhasználó saját igénye szerint tudja változtatni.
 
-                    //Kiírások fájlba
 
-                    if (Exception == true)
+                //Kiírások fájlba
+
+                if (Exception == true)
                 {
-                    ReszeredmenyFejlec.Add("Rossz");
-                    Fejlec.Add(ReszeredmenyFejlec.ToList());
-                    Tetelsor.Add(ReszeredmenyTetelsor.ToList());
+                    convertedI.SetIsValid(false);
+                    _convertedInvoices.Add(convertedI);
 
                     Exception = false;
                 }
                 else
                 {
-                    ReszeredmenyFejlec.Add("Helyes");
-                    Fejlec.Add(ReszeredmenyFejlec.ToList());
-                    Tetelsor.Add(ReszeredmenyTetelsor.ToList());
+                    convertedI.SetIsValid(true);
+                    _convertedInvoices.Add(convertedI);
 
                 }
-                    predictedFokonyviSzam = "";
-                    NegativE = false;
-                    Data.Clear();
-                    ReszeredmenyTetelsor.Clear();
-                    ReszeredmenyFejlec.Clear();
-                }
+                predictedFokonyviSzam = "";
+                NegativE = false;
+                Data.Clear();
+                ReszeredmenyTetelsor.Clear();
+                ReszeredmenyFejlec.Clear();
+            }
 
-                _fileHandler.Write(Fejlec, Tetelsor);
-                System.Diagnostics.Debug.WriteLine("A Konvertálás befejeződött. ->" + counter);
+            _fileHandler.Write(_convertedInvoices);
+            System.Diagnostics.Debug.WriteLine("A Konvertálás befejeződött. ->" + counter);
 
             }
 

@@ -1,4 +1,5 @@
 ﻿using GnuConvert.Models.Bank;
+using GnuConvert.Models.ConvertedInvoices;
 using GnuConvert.Models.Nyilvántartás;
 using GnuConvert.Services.Conversion.HelpFunctionsforConversion;
 using NPOI.SS.Formula.Eval;
@@ -8,6 +9,7 @@ using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static GnuConvert.Models.ConvertedInvoices.ConvertedInvoice;
 
 namespace GnuConvert.Services.Conversion
 {
@@ -17,6 +19,7 @@ namespace GnuConvert.Services.Conversion
 
         public List<string> DirectSearch(Invoice invoice, string kozlemeny, string osszeg, string partnerNev, string datum)
         {
+       
             var  kozwords = new string[] { };   
             List<string> data = new List<string>();
 
@@ -27,6 +30,7 @@ namespace GnuConvert.Services.Conversion
                 foreach (var word in kozwords)
                 {
                         found = functions.szallitoKereses(word, invoice);
+                    //failure.Reason = $"Direct match not found for '{formattedKozlemeny}', but found for '{word}'";
 
                 }
 
