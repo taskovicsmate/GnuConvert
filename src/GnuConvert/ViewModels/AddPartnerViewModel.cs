@@ -1,4 +1,5 @@
 ﻿using GnuConvert.Models.PartnersAndRules;
+using GnuConvert.Services.Conversion;
 using GnuConvert.Services.Conversion.HelpFunctionsforConversion;
 using GnuConvert.Services.GlAssignmentService;
 using GnuConvert.Services.Settings;
@@ -15,7 +16,7 @@ using System.Windows.Input;
 
 namespace GnuConvert.ViewModels
 {
-    public sealed class AddPartnerViewModel : INotifyPropertyChanged
+    public sealed class AddPartnerViewModel : ViewModelBase, INotifyPropertyChanged
     {
         RuleMaker ruleMaker;
         private string _selectedBankPath;
@@ -135,6 +136,44 @@ namespace GnuConvert.ViewModels
         {
             _close();
         }
+        private async void Test()
+        {
+            try
+            {
+                await RuleCreation();
+                // opcionális: siker üzenet / UI reset már a VM-ben is lehet
+            }
+            catch (OperationCanceledException)
+            {
+                // opcionális: "Megszakítva"
+            }
+            catch (Exception ex)
+            {
+                // TODO: központi exception handler / user-friendly hiba
+            }
+        }
+
+        public async Task RuleCreation()
+        {
+         
+    
+
+            await RunAsync(async (p, ct) =>
+            {
+                ruleMaker = new RuleMaker(SelectedBankPath, SelectInvoiceFilePath);
+                await Task.Run(() => ruleMaker.RunRuleCreation(p,ct,SelectedConversionPipeline!.Value));
+                RowsTemp = ruleMaker.GetRuleRows();
+                AddRows();
+              
+               
+
+                Progress.Message = "";
+                Progress.Value = 0;
+                
+            });
+
+          
+        }
         private void MakePartner() {
 
           
@@ -195,10 +234,11 @@ namespace GnuConvert.ViewModels
                 {
                     SelectedBankPath = dialog.FileName;
                     IsBankFileChosen = true;
-                    ruleMaker = new RuleMaker(SelectedBankPath, SelectInvoiceFilePath);
-                    ruleMaker.RunRuleCreation(SelectedConversionPipeline!.Value);
-                     RowsTemp = ruleMaker.GetRuleRows();
-                    AddRows();
+                    Test();
+                    //ruleMaker = new RuleMaker(SelectedBankPath, SelectInvoiceFilePath);
+                    //ruleMaker.RunRuleCreation(SelectedConversionPipeline!.Value);
+                    // RowsTemp = ruleMaker.GetRuleRows();
+                    //AddRows();
                 }
 
             }

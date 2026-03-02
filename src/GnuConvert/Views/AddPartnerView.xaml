@@ -66,7 +66,7 @@
                       ColumnWidth="*"
                       ScrollViewer.VerticalScrollBarVisibility="Auto"
                       ScrollViewer.CanContentScroll="True"
-                      Margin="10,0,10,-50" Height="480" VerticalAlignment="Top">
+                      Margin="10,0,10,20" VerticalAlignment="Top">
 
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Partner" Width="220" Binding="{Binding PartnerName}" IsReadOnly="True"/>
@@ -85,6 +85,15 @@
                     Margin="0,181,36,43"
                     Style="{DynamicResource ButtonStyle2}"
                     FontSize="14"  Background="#FF8A6240" Foreground="#FFF5F3EE" FontFamily="Century Schoolbook" Padding="5,5,5,5" VerticalAlignment="Bottom" Grid.IsSharedSizeScope="True" />
+            <Grid Grid.Row="4" VerticalAlignment="Bottom" Margin="0,10,0,0" Background="#FFCABA9C">
+
+                <ProgressBar Maximum="100" IsIndeterminate="{Binding Progress.IsIndeterminate}" Value="{Binding Progress.Value}" MinWidth="100" MinHeight="10" HorizontalAlignment="Left" Height="12" Margin="5,5,0,5"/>
+                <TextBlock Text="{Binding Progress.Message}" FontSize="12" FontFamily="Century Schoolbook" Foreground="#FF4D4335" HorizontalAlignment="Left" Height="12" Margin="115,5,0,5" Width="150">
+                    <TextBlock.Background>
+                        <SolidColorBrush Color="#FFE6E6E6" Opacity="1"/>
+                    </TextBlock.Background>
+                </TextBlock>
+            </Grid>
         </Grid>
     </Border>
 </UserControl>

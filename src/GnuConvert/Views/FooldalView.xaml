@@ -165,7 +165,7 @@
 
                     <StackPanel Grid.Row="4" Orientation="Horizontal">
                         <Button Style="{StaticResource PrimaryButton}"
-                                Command="{Binding StartBankConversionCommand}"
+                                Command="{Binding GoToConvertCommand}"
                                 Content="ÚJ BANK KONVERTÁLÁS INDÍTÁSA" Width="250" />
                     </StackPanel>
                 </Grid>

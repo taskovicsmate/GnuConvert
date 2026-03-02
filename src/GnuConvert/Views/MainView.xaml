@@ -174,7 +174,8 @@
             <!-- ALSÓ INFÓ -->
             <StackPanel Grid.Row="1" DockPanel.Dock="Left" Width="200" Background="#FFCABA9C" HorizontalAlignment="Center">
                 <Label x:Name="label" Content=" Fiók tipusa:" VerticalContentAlignment="Bottom" Cursor="" IsEnabled="False" ForceCursor="True" RenderTransformOrigin="0.5,1" Width="200" Foreground="#FF4D2D18" FontFamily="Century Schoolbook" FontWeight="Bold"/>
-                <Label x:Name="label_Copy" Content="V0.0.1" VerticalContentAlignment="Bottom" Cursor="" IsEnabled="False" HorizontalContentAlignment="Right" ForceCursor="True" Height="24" Margin="0,0,0,5" VerticalAlignment="Bottom" Padding="5,0,5,5" Foreground="#FF4D2D18" FontFamily="Century Schoolbook" FontWeight="Bold"/>
+                <Label x:Name="label_Copy" Content="V0.0.1" VerticalContentAlignment="Bottom" Cursor="" IsEnabled="False" HorizontalContentAlignment="Right" ForceCursor="True" Height="24" VerticalAlignment="Bottom" Padding="5,0,5,5" Foreground="#FF4D2D18" FontFamily="Century Schoolbook" FontWeight="Bold" Margin="0,0,0,5"/>
+                
             </StackPanel>
         </Grid>
         <!-- Oldalsó menü -->

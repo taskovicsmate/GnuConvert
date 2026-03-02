@@ -6,39 +6,44 @@
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls" mc:Ignorable="av"
              x:Class="GnuConvert.Views.ConvertView"
             xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
-    <!--DataContext="{DynamicResource ConvertVM}"-->
-   
+  
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding ViewLoadedCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <Grid Background="#FFF5F3EE">
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,0">
+
+    <Grid   Background="#FFF5F3EE" MinWidth="1000">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+
+        </Grid.RowDefinitions>
+
+        <Grid  Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,30,0,0">
             <Border Style="{StaticResource Card}" Padding="18,18,18,18">
                 <Border.Effect>
-                    <DropShadowEffect BlurRadius="18"
-              ShadowDepth="2"
-              Opacity="0.18"/>
+                    <DropShadowEffect BlurRadius="18" ShadowDepth="2"   Opacity="0.18"/>
                 </Border.Effect>
                 <TextBlock Text="Bank konvertálás gyorsan és egyszerűen!" FontSize="26" FontWeight="Bold" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
             </Border>
+        </Grid>
 
-        </StackPanel>
-        <StackPanel VerticalAlignment="Top">
-            <Border BorderBrush="#FF7A8F7A" BorderThickness="0,3,0,3" Margin="0,150,0,0" Padding="0,10,0,10">
-                <Grid >
-                    <Label x:Name="label2" Content="Partner választás" Panel.ZIndex="5" SnapsToDevicePixels="True" Margin="30,-47,0,0" AllowDrop="True" FontFamily="Century Schoolbook" VerticalAlignment="Top" FontSize="20" FontWeight="Bold" Foreground="#FFF5F3EE" Background="#FF7A8F7A" HorizontalAlignment="Left"/>
-                    <Label x:Name="label1" Content="Válasszon egy partnert:" HorizontalAlignment="Left" Panel.ZIndex="5" SnapsToDevicePixels="True" Margin="350,0,0,0" AllowDrop="True" FontFamily="Century Schoolbook" VerticalAlignment="Center" Foreground="#FF4D4335" FontSize="14" FontWeight="Bold"/>
-                    <ComboBox ItemsSource="{Binding Partners}"
-      SelectedItem="{Binding SelectedPartner, Mode=TwoWay}"
-      DisplayMemberPath="Name" MinWidth="200" FontSize="14" FontWeight="Bold" FontFamily="Century Schoolbook" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="550,0,0,0"/>
-                    <Button x:Name="PartnerButton" Command="{Binding ShowAddPartnerCommand}" Content="Partner hozzáadása" Padding="10,1,10,1" ScrollViewer.CanContentScroll="True" Panel.ZIndex="5" FontSize="14" Style="{DynamicResource ButtonStyle2}" Background="#FF8A6240" Foreground="#FFF5F3EE" FontFamily="Century Schoolbook" Margin="175,10,0,10" HorizontalAlignment="Left" Height="30" VerticalAlignment="Center"/>
-                    <Button x:Name="DeletePartner" Content="Partner törlése"  Command="{Binding DeletePartnerCommand}" HorizontalAlignment="Right" Height="40" RenderTransformOrigin="0.477,0.553" Padding="10,1,10,1" FontSize="14" Style="{DynamicResource ButtonStyle2}" Background="#FF8A6240" Foreground="#FFF5F3EE" FontFamily="Century Schoolbook" Width="130" Margin="0,0,51,0" VerticalAlignment="Center"/>
-                </Grid>
-            </Border>
-        </StackPanel>
-        <StackPanel Orientation="Vertical" Grid.Row="4" Margin="0,200,0,0" MinWidth="1000" MinHeight="1000" >
+        <Border BorderBrush="#FF7A8F7A" BorderThickness="0,3,0,3" Margin="0,150,0,0" Padding="0,10,0,10">
+            <Grid  Grid.Row="1">
+                <Label x:Name="label2" Content="Partner választás" Panel.ZIndex="5" SnapsToDevicePixels="True" Margin="30,-47,0,0" AllowDrop="True" FontFamily="Century Schoolbook" VerticalAlignment="Top" FontSize="20" FontWeight="Bold" Foreground="#FFF5F3EE" Background="#FF7A8F7A" HorizontalAlignment="Left"/>
+                <Label x:Name="label1" Content="Válasszon egy partnert:" HorizontalAlignment="Left" Panel.ZIndex="5" SnapsToDevicePixels="True" Margin="350,0,0,0" AllowDrop="True" FontFamily="Century Schoolbook" VerticalAlignment="Center" Foreground="#FF4D4335" FontSize="14" FontWeight="Bold"/>
+                <ComboBox ItemsSource="{Binding Partners}"  SelectedItem="{Binding SelectedPartner, Mode=TwoWay}"  DisplayMemberPath="Name" MinWidth="200" FontSize="14" FontWeight="Bold" FontFamily="Century Schoolbook" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="550,0,0,0"/>
+                <Button x:Name="PartnerButton" Command="{Binding ShowAddPartnerCommand}" Content="Partner hozzáadása" Padding="10,1,10,1" ScrollViewer.CanContentScroll="True" Panel.ZIndex="5" FontSize="14" Style="{DynamicResource ButtonStyle2}" Background="#FF8A6240" Foreground="#FFF5F3EE" FontFamily="Century Schoolbook" Margin="175,10,0,10" HorizontalAlignment="Left" Height="30" VerticalAlignment="Center"/>
+                <Button x:Name="DeletePartner" Content="Partner törlése"  Command="{Binding DeletePartnerCommand}" HorizontalAlignment="Right" Height="40" RenderTransformOrigin="0.477,0.553" Padding="10,1,10,1" FontSize="14" Style="{DynamicResource ButtonStyle2}" Background="#FF8A6240" Foreground="#FFF5F3EE" FontFamily="Century Schoolbook" Width="130" Margin="0,0,51,0" VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+
+
+        <Grid Grid.Row="2">
+
             <Border BorderBrush="#FF7A8F7A" BorderThickness="0,3,0,3" Margin="0,100,0,0" Padding="0,30,0,30" >
                 <Grid>
 
@@ -51,19 +56,58 @@
                     <Button x:Name="KonvertalasButton" Content="Bank kiválasztása"  Command="{Binding BankFilePathCommand}" HorizontalAlignment="Left" VerticalAlignment="Top" Height="40" RenderTransformOrigin="0.477,0.553" Padding="10,1,10,1" FontSize="14" Style="{DynamicResource ButtonStyle2}" Background="#FF8A6240" Foreground="#FFF5F3EE" FontFamily="Century Schoolbook" Margin="175,145,0,0" Width="146"/>
                     <Button x:Name="BankButton" Content="Konvertálás"  Command="{Binding ConvertDataCommand}" HorizontalAlignment="Left" VerticalAlignment="Top" Height="40" RenderTransformOrigin="0.477,0.553" Padding="10,1,10,1" FontSize="14" Style="{DynamicResource ButtonStyle2}" Background="#FF8A6240" Foreground="#FFF5F3EE" FontFamily="Century Schoolbook" Margin="175,200,0,0" Width="101"/>
                     <CheckBox x:Name="checkBox" HorizontalAlignment="Left" Margin="368,87,0,0" VerticalAlignment="Top" IsChecked="{Binding IsInvoiceFileChosen}"
-                          IsHitTestVisible="False" Focusable="False"/>
+                                      IsHitTestVisible="False" Focusable="False"/>
                     <CheckBox x:Name="checkBox2" HorizontalAlignment="Left" Margin="333,160,0,0" VerticalAlignment="Top" IsChecked="{Binding IsBankFileChosen}"
-                          IsHitTestVisible="False" Focusable="False"/>
+                                      IsHitTestVisible="False" Focusable="False"/>
 
                 </Grid>
             </Border>
-            <TextBlock Text="Előszőr válaszd ki vagy hozd létre a használni kívánt partnert." FontSize="16" TextAlignment="Center" Margin="0,30,0,10" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
-            <TextBlock Text="Utána írd be a banki fökönyvi számot!" FontSize="16" TextAlignment="Center" Margin="0,0,0,10" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
-            <TextBlock Text="Majd válaszd ki a pénzügyi nyilvántartást és a kiexportált bankot." FontSize="16" TextAlignment="Center" Margin="0,0,0,10" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
-            <TextBlock Text="Nyomj rá a konvertálás gombra és várd meg míg befejezi a konvertálást a program!" FontSize="16" TextAlignment="Center" Margin="0,0,0,10" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
-        </StackPanel>
-       
-                <ContentControl Content="{Binding CurrentSubView}"  RenderTransformOrigin="0.5,0.5" Panel.ZIndex="7" DockPanel.Dock="Top" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" />
+        </Grid>
+
+        <Grid Margin="0,10,0,25" Grid.Row="3">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top">
+                <TextBlock Text="Előszőr válaszd ki vagy hozd létre a használni kívánt partnert." FontSize="16" TextAlignment="Center" Margin="0,30,0,10" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
+                <TextBlock Text="Utána írd be a banki fökönyvi számot!" FontSize="16" TextAlignment="Center" Margin="0,0,0,10" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
+                <TextBlock Text="Majd válaszd ki a pénzügyi nyilvántartást és a kiexportált bankot." FontSize="16" TextAlignment="Center" Margin="0,0,0,10" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
+                <TextBlock Text="Nyomj rá a konvertálás gombra és várd meg míg befejezi a konvertálást a program!" FontSize="16" TextAlignment="Center" Margin="0,0,0,10" Foreground="#FF4D4335" FontFamily="Century Schoolbook" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Alsó fix sáv -->
+
+        <Grid Grid.Row="4" VerticalAlignment="Bottom" Margin="0,30,0,0" Background="#FFCABA9C">
+
+            <ProgressBar Maximum="100" IsIndeterminate="{Binding Progress.IsIndeterminate}" Value="{Binding Progress.Value}" MinWidth="100" MinHeight="10" HorizontalAlignment="Left" Height="12" Margin="0,5,0,5"/>
+            <TextBlock Text="{Binding Progress.Message}" FontSize="12" FontFamily="Century Schoolbook" Foreground="#FF4D4335" HorizontalAlignment="Left" Height="12" Margin="110,5,0,5" Width="150">
+                <TextBlock.Background>
+                    <SolidColorBrush Color="#FFE6E6E6" Opacity="1"/>
+                </TextBlock.Background>
+            </TextBlock>
+        </Grid>
+        <!-- alsó tartalom -->
+
+        <Grid Grid.RowSpan="4"
+      Panel.ZIndex="999"
+      Background="#80000000">
+
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=OverlayContent, Path=HasContent}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+
+            <ContentControl x:Name="OverlayContent"
+                    Content="{Binding CurrentSubView}"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"/>
+        </Grid>
+
+
     </Grid>
-    
+
 </UserControl>

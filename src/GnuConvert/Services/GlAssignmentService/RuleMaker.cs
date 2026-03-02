@@ -8,7 +8,10 @@ using GnuConvert.Services.Conversion;
 using GnuConvert.Services.Conversion.HelpFunctionsforConversion;
 using GnuConvert.Services.IO;
 using GnuConvert.ViewModels;
+using GnuConvert.ViewModels.State;
+using System;
 using System.Globalization;
+using System.Threading.Tasks;
 
 
 
@@ -46,19 +49,48 @@ namespace GnuConvert.Services.GlAssignmentService
            // _bankTMP = _fileHandler.LoadBank();
             _invoiceTMP = _fileHandler.LoadInvoice();
         }
-        public void RunRuleCreation(ConversionPipeline SelectedPipeline)
+        public async Task RunRuleCreation(IProgress<ProgressState.ProgressInfo>? progress, CancellationToken ct,ConversionPipeline SelectedPipeline)
         {
-         
+            progress?.Report(new ProgressState.ProgressInfo(null, "Szabályok készítése..."));
+            ct.ThrowIfCancellationRequested();
             switch (SelectedPipeline)
             {
             
                 case ConversionPipeline.MyPos:
+                    progress?.Report(new ProgressState.ProgressInfo(null, "Partner készítés indítása..."));
                     LoadMyposData();
+                    for (double i = 0; i < 50; i++)
+                    {
+                        progress?.Report(new ProgressState.ProgressInfo(i/(double)100 , "Bank Fájl beolvasás..."));
+                        await Task.Delay(10);
+                    }
+                    
+                        progress?.Report(new ProgressState.ProgressInfo(0.5, "Szabály alkotás kezdése..."));
                     MyPosRules();
+                    for (int i = 50; i < 100; i++)
+                    {
+                        progress?.Report(new ProgressState.ProgressInfo(i/ (double)100, "Szabályok megalkotása..."));
+                        await Task.Delay(10);
+                    }
+                        progress?.Report(new ProgressState.ProgressInfo(1, "Kész..."));
                     break;
                 default:
+                    progress?.Report(new ProgressState.ProgressInfo(null, "Partner készítés indítása..."));
                     LoadBankData(SelectedPipeline.ToString());
+                    for (int i = 0; i < 50; i++)
+                    {
+                        progress?.Report(new ProgressState.ProgressInfo(i / (double)100, "Bank Fájl beolvasása..."));
+                        await Task.Delay(10);
+                    }
+
+                    progress?.Report(new ProgressState.ProgressInfo(0.5, "Szabály alkotás kezdése..."));
                     BankRules();
+                    for (int i = 50; i < 100; i++)
+                    {
+                        progress?.Report(new ProgressState.ProgressInfo(i / (double)100, "Szabályok megalkotása..."));
+                        await Task.Delay(10);
+                    }
+                    progress?.Report(new ProgressState.ProgressInfo(1, "Kész..."));
                     break;
 
             }

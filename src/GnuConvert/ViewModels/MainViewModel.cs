@@ -1,12 +1,13 @@
-﻿using System.ComponentModel;
+﻿using GnuConvert.Interfaces;
+using GnuConvert.Services.Settings;
+using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using System.IO;
-using GnuConvert.Services.Settings;
 
 namespace GnuConvert.ViewModels
 {
-    public class MainViewModel : INotifyPropertyChanged
+    public class MainViewModel : INotifyPropertyChanged, INavigationService
     {
        
 
@@ -55,7 +56,7 @@ namespace GnuConvert.ViewModels
         private readonly SettingsViewModel _settingsVM = new();
         private readonly KataViewModel _kataVM = new();
         private readonly WebshopViewModel _webshopVM = new();
-        private readonly FooldalViewModel _fooldalVM = new();
+        private readonly FooldalViewModel _fooldalVM;
 
         public ICommand ShowConvertCommand { get; }
         public ICommand ShowSettingsCommand { get; }
@@ -65,6 +66,7 @@ namespace GnuConvert.ViewModels
 
         public MainViewModel()
         {
+            _fooldalVM = new FooldalViewModel(this);
             Navigate(MainPage.Fooldal);
 
             ShowConvertCommand = new RelayCommand(() => Navigate(MainPage.Convert));
@@ -73,7 +75,10 @@ namespace GnuConvert.ViewModels
             ShowWebshopCommand = new RelayCommand(() => Navigate(MainPage.Webshop));
             ShowFooldalCommand = new RelayCommand(() => Navigate(MainPage.Fooldal));
         }
-
+        public void NavigateTo(MainPage page)
+        {
+            Navigate(page);
+        }
         private void Navigate(MainPage page)
         {
             ActivePage = page;
@@ -86,7 +91,7 @@ namespace GnuConvert.ViewModels
                 _ => _fooldalVM
             };
         }
-
+      
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string? name = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

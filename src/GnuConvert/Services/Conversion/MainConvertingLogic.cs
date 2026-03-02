@@ -6,6 +6,7 @@ using GnuConvert.Services.IO;
 using System.Globalization;
 using System;
 using GnuConvert.Models.ConvertedInvoices;
+using GnuConvert.ViewModels.State;
 
 namespace GnuConvert.Services.Conversion
 {
@@ -18,7 +19,7 @@ namespace GnuConvert.Services.Conversion
         InDirectMatch _inDirectMatch = new InDirectMatch();
         PredictMatch _predictMatch = new PredictMatch();
         Partner _partner;
-
+     
         private string _convertedBankFileLocation;
         private string _exceptionBankFileLocation;
         private string _bizNettodKapcsolo;
@@ -64,7 +65,7 @@ namespace GnuConvert.Services.Conversion
             _invoice = new Invoice();
             _partner = p;
             _fileHandler = new FileHandler(_exceptionBankFileLocation, _convertedBankFileLocation, _bankFileLocation, _invoiceFileLocation);
-        }
+           }
         public MainConvertingLogic()
         {
             _bank = new BankImportResult();
@@ -79,9 +80,14 @@ namespace GnuConvert.Services.Conversion
             _invoice = _fileHandler.LoadInvoice();
         }
 
+        public Task RendezesAsync(IProgress<ProgressState.ProgressInfo>? progress, CancellationToken ct)
+     => Task.Run(() => Rendezes(progress, ct), ct);
 
-        public void Rendezes()
-        {
+
+
+        public void Rendezes(IProgress<ProgressState.ProgressInfo>? progress, CancellationToken ct)
+            {
+            progress?.Report(new ProgressState.ProgressInfo(null, "Konvertálás indítása..."));
             string predictedFokonyviSzam = "";
             bool found = false;
             bool NegativE = false;
@@ -100,6 +106,11 @@ namespace GnuConvert.Services.Conversion
 
             for (int i = 0; i < _bank.Transactions.Count; i++)
             {
+                ct.ThrowIfCancellationRequested();
+
+                // ne reportolj túl gyakran
+                progress?.Report(new ProgressState.ProgressInfo(i / (double)_bank.Transactions.Count, $"Tétel {i + 1}/{_bank.Transactions.Count}"));
+
                 ConvertFailure faliure = new ConvertFailure();
                 ConvertedInvoice convertedI = new ConvertedInvoice();
                 System.Diagnostics.Debug.WriteLine($"A {i + 1}. tétel következik!");
@@ -179,8 +190,15 @@ namespace GnuConvert.Services.Conversion
                 ReszeredmenyFejlec.Clear();
             }
 
+            progress?.Report(new ProgressState.ProgressInfo(null, "Fájl írása..."));
+
+            // Ha a Write szinkron és sokat ír, ez is fagyaszt. Minimum ennyit tegyél:
+          //  await Task.Run(() => _fileHandler.Write(_convertedInvoices), ct);
+
+
             _fileHandler.Write(_convertedInvoices);
             System.Diagnostics.Debug.WriteLine("A Konvertálás befejeződött. ->" + counter);
+            progress?.Report(new ProgressState.ProgressInfo(1, $"Kész. Hibás tételek: {counter}/{_bank.Transactions.Count}", _bank.Transactions.Count, _bank.Transactions.Count));
 
         }
 
@@ -348,5 +366,6 @@ namespace GnuConvert.Services.Conversion
             return ReszeredmenyFejlec;
 
         }
+        
     }
 }
