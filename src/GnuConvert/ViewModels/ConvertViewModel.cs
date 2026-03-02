@@ -2,17 +2,23 @@
 using GnuConvert.Services.Conversion;
 using GnuConvert.Services.Settings;
 using GnuConvert.Services.Storage;
+using GnuConvert.ViewModels.State;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Security.RightsManagement;
+using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
+using static System.Resources.ResXFileRef;
 
 namespace GnuConvert.ViewModels
 {
-    public class ConvertViewModel : INotifyPropertyChanged
+    public class ConvertViewModel : ViewModelBase, INotifyPropertyChanged
     {
         /*
             Teendők: 
@@ -30,11 +36,12 @@ namespace GnuConvert.ViewModels
         private string _bankiFokonyviszam;
         public string _invoiceFileLocationPath = "";
         public string _bankHistoryFileLocationPath = "";
-
+   
         private Partner? _selectedPartner;
-        private readonly SettingsStore _settingsStore;
+     
         private readonly PartnerRulesStore _rulesStore;
         Partner partner;
+
         public bool isPartnerSelected = false;
         public bool _isBankFileChosen = false;
         public bool _isInvoiceFileChosen = false;
@@ -67,10 +74,10 @@ namespace GnuConvert.ViewModels
             ShowAddPartnerCommand = new RelayCommand(() => CurrentSubView = new AddPartnerViewModel(onSaved: LoadPartners, onClose: CloseSubView,Partners.ToList()));
             BankFilePathCommand = new RelayCommand(ChoseBankFile);
             InvoiceFilePathCommand = new RelayCommand(ChoseInvoiceFile);
-            ConvertDataCommand = new RelayCommand(ConvertFiles);
+            ConvertDataCommand = new RelayCommand(Test);
             DeletePartnerCommand = new RelayCommand(DeletePartner,()=>isPartnerSelected);
      
-            _settingsStore = App.SettingsStore;
+           
             _rulesStore = App.PartnerRulesStore;
             LoadPartners();
 
@@ -94,7 +101,6 @@ namespace GnuConvert.ViewModels
                 }
             }
         }
-
 
         public string BankiFokonyviszam
         {
@@ -161,7 +167,11 @@ namespace GnuConvert.ViewModels
         public object CurrentSubView
         {
             get => _currentSubView;
-            set { _currentSubView = value; OnPropertyChanged(nameof(CurrentSubView)); }
+            set { 
+                _currentSubView = value; 
+               
+                OnPropertyChanged(nameof(CurrentSubView)); 
+            }
         }
         public void CloseSubView() => CurrentSubView = null;
         public void ChoseBankFile()
@@ -212,23 +222,56 @@ namespace GnuConvert.ViewModels
 
             }
         }
-
-        public void ConvertFiles()
+        private async void Test()
         {
-            if (isFokonyvisSzamWriten && isPartnerSelected && _isBankFileChosen && _isInvoiceFileChosen)
+            try
             {
-                convertingLogic = new MainConvertingLogic(BizNettodKapcsolo, BizNettod, _bankiFokonyviszam, _bankHistoryFileLocationPath,_invoiceFileLocationPath, partner);
-                convertingLogic.LoadData();
-                convertingLogic.Rendezes();
-                IsBankFileChosen = false;
-                IsInvoiceFileChosen = false;
-                BankiFokonyviszam = "";
+                await ConvertFilesAsync();
+                // opcionális: siker üzenet / UI reset már a VM-ben is lehet
             }
-            else
+            catch (OperationCanceledException)
             {
-                //Hiba üzenet hogy nincs minden kitöltve
+                // opcionális: "Megszakítva"
+            }
+            catch (Exception ex)
+            {
+                // TODO: központi exception handler / user-friendly hiba
             }
         }
+
+        public async Task ConvertFilesAsync()
+        {
+            if (!(isFokonyvisSzamWriten && isPartnerSelected && _isBankFileChosen && _isInvoiceFileChosen))
+            {
+                // TODO: hibaüzenet
+                return;
+            }
+
+            convertingLogic = new MainConvertingLogic(
+                BizNettodKapcsolo, BizNettod, _bankiFokonyviszam,
+                _bankHistoryFileLocationPath, _invoiceFileLocationPath, partner);
+
+            await RunAsync(async (p, ct) =>
+            {
+                // 1) ha ez is hosszú: tedd async-sá, vagy Task.Run
+                await Task.Run(() => convertingLogic.LoadData(), ct);
+
+                // 2) a rendezés nálad CPU-bound -> ezt is háttérszálra
+                await Task.Run(() => convertingLogic.Rendezes(p, ct), ct);
+                Progress.Message = ""; 
+                   Progress.Value = 0;
+              //  CurrentSubView = new ConversionEndedViewModel(App.Settings.KonvertaltSzamlakHelye);
+               CurrentSubView = new ConversionEndedViewModel(App.Settings.KonvertaltSzamlakHelye+ @"\KonvertaltSzamlak.csv", close: CloseSubView);
+                // Ha már van rendes RendezesAsync, akkor:
+                // await convertingLogic.RendezesAsync(p, ct);
+                // de csak akkor jó, ha belül nem UI-threaden darál.
+            });
+
+            IsBankFileChosen = false;
+            IsInvoiceFileChosen = false;
+            BankiFokonyviszam = "";
+        }
+        
         public void DeletePartner() {
  
                  _rulesStore.RemovePartner(SelectedPartner.Id);
@@ -252,7 +295,7 @@ namespace GnuConvert.ViewModels
         protected void OnPropertyChanged(string name)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-
+       
     }
 
 }

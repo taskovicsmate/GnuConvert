@@ -46,6 +46,11 @@
         <DataTemplate DataType="{x:Type vm:AddPartnerViewModel}">
             <v:AddPartnerView />
         </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:ConversionEndedViewModel}">
+            <v:ConversionEndedView/>
+        </DataTemplate>
+        
         <!--<DataTemplate DataType="{x:Type vm:ViewSettingsViewModel}">
             <v:ViewSettingsView />
         </DataTemplate>-->
