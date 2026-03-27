@@ -1,12 +1,11 @@
-﻿using global::GnuConvert.Models.Bank;
-using global::GnuConvert.Models.PartnersAndRules;
+﻿using global::GnuConvert.Models.PartnersAndRules;
 using global::GnuConvert.Services.Conversion.HelpFunctionsforConversion;
 using global::GnuConvert.Services.IO;
 using GnuConvert.Models.ConvertedInvoices;
 using GnuConvert.Models.MyPos;
 using GnuConvert.Models.Nyilvántartás;
 using System.Globalization;
-using static GnuConvert.Models.ConvertedInvoices.ConvertedInvoice;
+
 namespace GnuConvert.Services.Conversion.MyPosConversion
 {
         public class MainMyPosConversionLogic

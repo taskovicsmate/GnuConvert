@@ -1,7 +1,5 @@
 ﻿using GnuConvert.Interfaces;
-using GnuConvert.Services.Settings;
 using System.ComponentModel;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 

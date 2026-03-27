@@ -7,9 +7,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GnuConvert.Views"
         mc:Ignorable="d"
-        Title="Bejelentkezés" Height="400" Width="350" WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
-        Loaded="Window_Loaded">
-    <Grid Background="#f5f5f5" Margin="20">
+        Title="Bejelentkezés" Height="450" Width="350" WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
+        Loaded="Window_Loaded" Background="#FFF5F3EE"
+        xmlns:conv="clr-namespace:GnuConvert.Commands">
+
+    <Window.Resources>
+        <conv:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+    </Window.Resources>
+    
+    <Grid Background="#FFF5F3EE" Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -17,17 +23,32 @@
         </Grid.RowDefinitions>
 
         <!-- Logo -->
+
+        <Image x:Name="image" Height="60" Width="100" Source="/Views/a legcukibbGNU.png" Stretch="UniformToFill" IsHitTestVisible="False" Margin="0,10,0,0" VerticalAlignment="Top">
+            <Image.OpacityMask>
+                <ImageBrush ImageSource="/Views/a legcukibbGNU.png">
+                    <ImageBrush.RelativeTransform>
+                        <TransformGroup>
+                            <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                            <SkewTransform AngleX="50" CenterX="0.5" CenterY="0.5"/>
+                            <RotateTransform CenterX="0.5" CenterY="0.5"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </ImageBrush.RelativeTransform>
+                </ImageBrush>
+            </Image.OpacityMask>
+        </Image>
         <TextBlock Text="Gnu Convert" FontSize="26" FontWeight="Bold" Foreground="#2e7d32" 
-                   HorizontalAlignment="Center" Margin="0,20,0,20"/>
+                   HorizontalAlignment="Center" Margin="0,70,0,20" FontFamily="Century Schoolbook"/>
 
         <!-- Bejelentkezési űrlap -->
-        <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,0,20">
+        <StackPanel Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Margin="0,0,0,20">
             <TextBlock Text="Felhasználónév" Margin="5,0"/>
             <TextBox Name ="name" FontSize="20" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" Height="30"/>
 
             <TextBlock Text="Jelszó" Margin="5,10,5,0"/>
             <PasswordBox Name="PasswordBox" FontSize="20" Margin="0,5" Height="30" PasswordChanged="PasswordBox_PasswordChanged"/>
-
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}" FontSize="17" FontWeight="Bold" FontFamily="Century Schoolbook" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="175,-16,0,0"/>
             <Button Content="Bejelentkezés" Command="{Binding LoginCommand}"
                     Margin="0,20,0,0" Height="35" Background="#2e7d32" FontWeight="Bold" Foreground="White"/>
         </StackPanel>

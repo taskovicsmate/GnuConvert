@@ -1,12 +1,5 @@
-﻿
-using GnuConvert.Models.FokonyvSzamok;
-using GnuConvert.Models.PartnersAndRules;
+﻿using GnuConvert.Models.PartnersAndRules;
 using GnuConvert.Services.GlAssignmentService;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GnuConvert.Services.Conversion
 {

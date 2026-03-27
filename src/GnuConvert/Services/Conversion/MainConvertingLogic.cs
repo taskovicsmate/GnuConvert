@@ -4,7 +4,6 @@ using GnuConvert.Models.PartnersAndRules;
 using GnuConvert.Services.Conversion.HelpFunctionsforConversion;
 using GnuConvert.Services.IO;
 using System.Globalization;
-using System;
 using GnuConvert.Models.ConvertedInvoices;
 using GnuConvert.ViewModels.State;
 
@@ -63,7 +62,7 @@ namespace GnuConvert.Services.Conversion
 
             _bank = new BankImportResult();
             _invoice = new Invoice();
-            _partner = p;
+            _partner = p ?? throw new ArgumentNullException(nameof(p)); ;
             _fileHandler = new FileHandler(_exceptionBankFileLocation, _convertedBankFileLocation, _bankFileLocation, _invoiceFileLocation);
            }
         public MainConvertingLogic()

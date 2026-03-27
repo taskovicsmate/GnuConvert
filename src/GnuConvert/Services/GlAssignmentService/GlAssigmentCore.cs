@@ -1,14 +1,7 @@
-﻿using GnuConvert.Models.Bank;
-using GnuConvert.Models.Nyilvántartás;
+﻿using GnuConvert.ExceptionHandling;
 using GnuConvert.Models.PartnersAndRules;
-using GnuConvert.Services.Conversion;
 using GnuConvert.Services.Conversion.HelpFunctionsforConversion;
-using GnuConvert.Services.IO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace GnuConvert.Services.GlAssignmentService
 {
@@ -19,7 +12,20 @@ namespace GnuConvert.Services.GlAssignmentService
        
         public string PredictAccount(string description,Partner partner)
         {
+            if (string.IsNullOrWhiteSpace(description))
+                throw new DomainException(
+                    "INVALID_DESCRIPTION",
+                    "Description cannot be empty.");
 
+            if (partner == null)
+                throw new DomainException(
+                    "INVALID_PARTNER",
+                    "Partner cannot be null.");
+
+            if (partner.Rules == null)
+                throw new DomainException(
+                    "INVALID_RULES",
+                    "Partner rules are not defined.");
 
             string text = TextFormatting.Normalize(description);
            

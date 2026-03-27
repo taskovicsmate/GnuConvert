@@ -1,12 +1,8 @@
-﻿using GnuConvert.Models.PartnersAndRules;
-using GnuConvert.Services.Settings;
-using System;
-using System.Collections.Generic;
+﻿using GnuConvert.ExceptionHandling;
+using GnuConvert.Models.PartnersAndRules;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
+
 
 namespace GnuConvert.Services.Storage
 {
@@ -40,9 +36,26 @@ namespace GnuConvert.Services.Storage
                     if (loaded != null)
                         return new Partner(partnerName,partnerid,loaded,loadedPipeline);
                 }
-                catch 
+                catch (JsonException ex)
                 {
-                    // Corrupted or invalid JSON → fall through and recreate default
+                    throw new PersistenceException(
+                        "INVALID_JSON",
+                        $"A JSON fájl sérült: {rulesFile}",
+                        ex);
+                }
+                catch (IOException ex)
+                {
+                    throw new PersistenceException(
+                        "FILE_READ_ERROR",
+                        $"Nem sikerült a fájlt beolvasni: {rulesFile}",
+                        ex);
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    throw new PersistenceException(
+                        "FILE_ACCESS_DENIED",
+                        $"Nem sikerült a fájlt megnyitni: {rulesFile}",
+                        ex);
                 }
             }
 
@@ -56,23 +69,25 @@ namespace GnuConvert.Services.Storage
         }
         private ConversionPipeline GetPipelineFromRegistry(string partnerId)
         {
-            try
-            {
-                var partners = LoadAll(); // a te meglévő LoadAll-od
+           
+                var partners = LoadAll();
                 var p = partners.FirstOrDefault(x => x.Id == partnerId);
-                return p != null ? p.Pipelines : default; // default = enum 0 
-            }
-            catch
-            {
-                return default;
-            }
+                if (p == null)
+                {
+                    throw new DomainException(
+                        "PARTNER_NOT_FOUND",
+                        $"Partner nem található: {partnerId}");
+                }
+            return p.Pipelines;
+            
+          
         }
         public void Save(Partner partner)
         {
             if (partner == null)
-                throw new ArgumentNullException(nameof(partner));
+                throw new DomainException("INVALID_PARTNER_NAME","Partner neve nem lehet üres.");
             if (string.IsNullOrWhiteSpace(partner.Id.ToString()))
-                throw new ArgumentException("partnerId cannot be null or empty.", nameof(partner.Id));
+                throw new DomainException("INVALID_PARTNER_ID", "Partner ID nem lehet üres.");
 
             var partnerDir = AppPaths.PartnerDir(partner.Id);
             Directory.CreateDirectory(partnerDir);
@@ -87,15 +102,27 @@ namespace GnuConvert.Services.Storage
             File.WriteAllText(tmp, json);
 
             // 2) Validate temp
-            var roundTrip = JsonSerializer.Deserialize<List<Rule>>(File.ReadAllText(tmp), _jsonOptions);
-            if (roundTrip == null)
-                throw new InvalidOperationException("Failed to validate partner rules JSON before replacing.");
+            try
+            {
+                var roundTrip = JsonSerializer.Deserialize<List<Rule>>(File.ReadAllText(tmp), _jsonOptions);
+                if (roundTrip == null)
+                        throw new PersistenceException("INVALID_JSON",$"A JSON fájl sérült: {tmp}");
+                
 
-            // 3) Atomic replace
-            if (File.Exists(path))
-                File.Replace(tmp, path, bak, ignoreMetadataErrors: true);
-            else
-                File.Move(tmp, path);
+                // 3) Atomic replace
+                if (File.Exists(path))
+                    File.Replace(tmp, path, bak, ignoreMetadataErrors: true);
+                else
+                    File.Move(tmp, path);
+
+            }
+            catch (JsonException ex)
+            {
+                throw new PersistenceException(
+                    "INVALID_JSON",
+                    $"Invalid JSON written to temp file: {tmp}",
+                    ex);
+            }
         }
 
         public List<Partner> LoadAll()
@@ -125,27 +152,45 @@ namespace GnuConvert.Services.Storage
         public void AddPartner(string partnerId, string displayName,ConversionPipeline pipeline)
         {
             if (string.IsNullOrWhiteSpace(partnerId))
-                throw new ArgumentException("partnerId is required.", nameof(partnerId));
+                throw new DomainException(
+                    "INVALID_PARTNER_ID",
+                    "Partner ID szükséges");
+
             if (string.IsNullOrWhiteSpace(displayName))
-                throw new ArgumentException("displayName is required.", nameof(displayName));
+                throw new DomainException(
+                    "INVALID_DISPLAY_NAME",
+                    "A partner neve nem lehet üres.");
+
             if (pipeline == default)
-                throw new ArgumentException("pipeline is required.", nameof(pipeline));
+                throw new DomainException(
+                    "INVALID_PIPELINE",
+                    "Pipeline must be specified.");
             var partners = LoadAll().ToList();
 
             if (partners.Any(p => p.Id == partnerId))
-                throw new InvalidOperationException($"Partner with id '{partnerId}' already exists.");
+                throw new DomainException(
+                    "PARTNER_ALREADY_EXISTS",
+                    $"Partner ezzel '{partnerId}' az azonosítóval már létezik.");
 
             partners.Add(new Partner(partnerId, displayName,pipeline));
 
             JsonFileStore.SaveAtomic(AppPaths.PartnersRegistryFile, partners);
 
-            // a rules.json-t nem itt csináljuk, azt majd a PartnerStore hozza létre LoadOrCreateDefault-tal
+       
         }
         public void RemovePartner(string partnerId)
         {
+            if (string.IsNullOrWhiteSpace(partnerId))
+                throw new DomainException(
+                    "INVALID_PARTNER_ID",
+                    "Partner azonosító szükséges.");
+
             var dir = AppPaths.PartnerDir(partnerId);
             if (!Directory.Exists(dir))
-                return;
+                throw new DomainException(
+                    "PARTNER_NOT_FOUND",
+                    $"Partner könyvtára nem létezik: {partnerId}");
+
             var partners = LoadAll().ToList();
             var removed = partners.RemoveAll(p => p.Id == partnerId) > 0;
             // Safety: csak a PartnersRoot alatt törölhetünk
@@ -153,7 +198,9 @@ namespace GnuConvert.Services.Storage
             var fullRoot = Path.GetFullPath(AppPaths.PartnersRoot).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
 
             if (!fullDir.StartsWith(fullRoot, StringComparison.OrdinalIgnoreCase))
-                throw new InvalidOperationException("Refusing to delete directory outside PartnersRoot.");
+                throw new DomainException(
+                    "INVALID_DELETE_PATH",
+                    "Refusing to delete directory outside PartnersRoot.");
 
             Directory.Delete(fullDir, recursive: true);
             if (removed)

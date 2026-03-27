@@ -5,8 +5,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls" mc:Ignorable="av"
              x:Class="GnuConvert.Views.ConvertView"
-            xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
-  
+            xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+            xmlns:conv="clr-namespace:GnuConvert.Commands">
+    
+    <UserControl.Resources>
+        <conv:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+    </UserControl.Resources>
+    
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding ViewLoadedCommand}" />
@@ -46,6 +51,7 @@
 
             <Border BorderBrush="#FF7A8F7A" BorderThickness="0,3,0,3" Margin="0,100,0,0" Padding="0,30,0,30" >
                 <Grid>
+                    <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}" FontSize="17" FontWeight="Bold" FontFamily="Century Schoolbook" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="175,-16,0,0"/>
 
                     <Label x:Name="label3" Content="Konvertálás" Panel.ZIndex="5" SnapsToDevicePixels="True" Margin="30,-67,0,0" AllowDrop="True" FontFamily="Century Schoolbook" VerticalAlignment="Top" FontSize="20" FontWeight="Bold" Foreground="#FFF5F3EE" Background="#FF7A8F7A" HorizontalAlignment="Left"/>
 

@@ -1,21 +1,15 @@
-﻿using GnuConvert.Models.PartnersAndRules;
-using GnuConvert.Services.Conversion;
+﻿using GnuConvert.ExceptionHandling;
+using GnuConvert.Models.PartnersAndRules;
 using GnuConvert.Services.Conversion.MyPosConversion;
 using GnuConvert.Services.Storage;
 using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using static GnuConvert.Models.PartnersAndRules.ConversionPipeline;
+
 
 namespace GnuConvert.ViewModels
 {
-    public class WebshopViewModel:INotifyPropertyChanged
+    public class WebshopViewModel: ViewModelBase
     {
         public ObservableCollection<Partner> Partners { get; } = new();
         public MainMyPosConversionLogic convertingLogic;
@@ -31,7 +25,7 @@ namespace GnuConvert.ViewModels
    
         private readonly PartnerRulesStore _rulesStore;
         Partner partner;
-        public bool isPartnerSelected = false;
+        
         public bool _isBankFileChosen = false;
         public bool _isInvoiceFileChosen = false;
         public bool isFokonyvisSzamWriten = false;
@@ -65,12 +59,22 @@ namespace GnuConvert.ViewModels
             BankFilePathCommand = new RelayCommand(ChoseBankFile);
             InvoiceFilePathCommand = new RelayCommand(ChoseInvoiceFile);
             ConvertDataCommand = new RelayCommand(ConvertFiles);
-            DeletePartnerCommand = new RelayCommand(DeletePartner, () => isPartnerSelected);
+            DeletePartnerCommand = new RelayCommand(DeletePartner, () => IsPartnerSelected);
 
           
             _rulesStore = App.PartnerRulesStore;
             LoadPartners();
 
+        }
+        private bool _isPartnerSelected;
+        public bool IsPartnerSelected
+        {
+            get => _isPartnerSelected;
+            set
+            {
+                _isPartnerSelected = value;
+                OnPropertyChanged();
+            }
         }
         public Partner? SelectedPartner
         {
@@ -86,7 +90,7 @@ namespace GnuConvert.ViewModels
                 {
 
                     partner = _rulesStore.LoadOrCreateDefault(_selectedPartner.Name, _selectedPartner.Id, _selectedPartner.Pipelines);
-                    isPartnerSelected = true;
+                    IsPartnerSelected = true;
 
                 }
             }
@@ -182,7 +186,7 @@ namespace GnuConvert.ViewModels
             catch (Exception k)
             {
 
-
+                HandleAppException(new PersistenceException("FILE_SELECTION_ERROR", "Hiba történt a bank fájl kiválasztása során.", k));
 
             }
         }
@@ -206,33 +210,74 @@ namespace GnuConvert.ViewModels
             catch (Exception k)
             {
 
-
+                HandleAppException(new PersistenceException("FILE_SELECTION_ERROR", "Hiba történt a nyilvántartás fájl kiválasztása során.", k));
 
             }
         }
+        private void Validate()
+        {
 
+            if (!IsBankFileChosen)
+                throw new DomainException("BANK_FILE_MISSING", "Bank fájl nincs kiválasztva.");
+
+            if (!IsPartnerSelected)
+                throw new DomainException("PARTNER_NOT_SELECTED", "Partner nincs kiválasztva.");
+
+            if (!IsInvoiceFileChosen)
+                throw new DomainException("INVOICE_FILE_MISSING", "Nyilvántartás fájl nincs kiválasztva.");
+
+            if (!isFokonyvisSzamWriten)
+                throw new DomainException("GLACCOUNT_NOT_SELECTED", "Fökönyvi szám szükséges.");
+        }
         public void ConvertFiles()
         {
-            if (isFokonyvisSzamWriten && isPartnerSelected && _isBankFileChosen && _isInvoiceFileChosen)
+            try
             {
+                 Validate();
                 convertingLogic = new MainMyPosConversionLogic(BizNettodKapcsolo, BizNettod, _bankiFokonyviszam, _bankHistoryFileLocationPath, _invoiceFileLocationPath, partner);
                 convertingLogic.LoadData();
                 convertingLogic.Rendezes();
                 IsBankFileChosen = false;
                 IsInvoiceFileChosen = false;
                 BankiFokonyviszam = "";
+            
+
             }
-            else
+             catch (AppException ex)
             {
-                //Hiba üzenet hogy nincs minden kitöltve
+                HandleAppException(ex);
+
             }
+            catch (Exception ex)
+            {
+                HandleUnknownException(ex);
+            }
+
+          
         }
         public void DeletePartner()
         {
+            try
+            {
 
-            _rulesStore.RemovePartner(SelectedPartner.Id);
-            LoadPartners();
-            isPartnerSelected = false;
+                if (SelectedPartner == null)
+                    throw new DomainException("PARTNER_NOT_SELECTED", "Nincs kiválasztva partner a törléshez.");
+
+                _rulesStore.RemovePartner(SelectedPartner.Id);
+                LoadPartners();
+                IsPartnerSelected = false;
+
+            }
+            catch (AppException ex)
+            {
+
+                HandleAppException(ex);
+            }
+            catch (Exception ex)
+            {
+                HandleUnknownException(ex);
+            }
+           
         }
         public void LoadPartners()
         {
@@ -246,10 +291,6 @@ namespace GnuConvert.ViewModels
                 }
             }
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string name)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
 
     }

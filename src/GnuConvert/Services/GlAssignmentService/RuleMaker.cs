@@ -1,5 +1,4 @@
 ﻿using GnuConvert.BankImport;
-using GnuConvert.Models.Bank;
 using GnuConvert.Models.ConvertedInvoices;
 using GnuConvert.Models.MyPos;
 using GnuConvert.Models.Nyilvántartás;
@@ -9,9 +8,7 @@ using GnuConvert.Services.Conversion.HelpFunctionsforConversion;
 using GnuConvert.Services.IO;
 using GnuConvert.ViewModels;
 using GnuConvert.ViewModels.State;
-using System;
 using System.Globalization;
-using System.Threading.Tasks;
 
 
 
@@ -46,7 +43,6 @@ namespace GnuConvert.Services.GlAssignmentService
         {
             var importer = new BankImporter(BankDefinitions.All);
             _bankTMP = importer.Import(BankDefinition, BankFileLocation);
-           // _bankTMP = _fileHandler.LoadBank();
             _invoiceTMP = _fileHandler.LoadInvoice();
         }
         public async Task RunRuleCreation(IProgress<ProgressState.ProgressInfo>? progress, CancellationToken ct,ConversionPipeline SelectedPipeline)

@@ -31,7 +31,7 @@ namespace GnuConvert
 
             if (!File.Exists(path))
             {
-                File.WriteAllText(path, "{}", System.Text.Encoding.UTF8); // vagy default objektum json
+                File.WriteAllText(path, "[\r\n  {\r\n    \"Username\": \"teszt1\",\r\n    \"PasswordHash\": \"teszt1\",\r\n    \"IsLogined\": true,\r\n    \"Role\": \"admin\"\r\n  }\r\n]", System.Text.Encoding.UTF8); // vagy default objektum json
             }
 
             var json = File.ReadAllText(path, System.Text.Encoding.UTF8);

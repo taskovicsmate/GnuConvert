@@ -4,7 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GnuConvert.Views"
+             xmlns:conv="clr-namespace:GnuConvert.Commands"
              mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <conv:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+    </UserControl.Resources>
+
     <Border BorderBrush="#FF7A8F7A" BorderThickness="3">
         <Grid Background="#FFF5F3EE">
             <Grid.RowDefinitions>
@@ -16,6 +22,7 @@
             <!-- FELSŐ RÉSZ: minden vezérlő -->
             <StackPanel Grid.Row="0" Margin="10">
                 <TextBlock FontSize="26" Foreground="#FF4D4335" FontFamily="Century Schoolbook" FontWeight="Bold"><Run Text="Új partner hozzáadása"/><Run Language="hu-hu" Text=" és betanítása"/><LineBreak/><Run Language="hu-hu"/></TextBlock>
+                <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}" FontSize="16" FontWeight="Bold" FontFamily="Century Schoolbook" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,10,5"/>
                 <TextBlock FontSize="16" Foreground="#FF4D4335" FontFamily="Century Schoolbook"><Run Text="Adja meg a partner nevét és a tételelkhez tartozó főkönyvi számot."/></TextBlock>
                 <Grid Margin="0,10,0,0">
                     <Label Content="Új partner bankjának kiválasztása:" FontSize="14" VerticalAlignment="Center" FontFamily="Century Schoolbook"/>

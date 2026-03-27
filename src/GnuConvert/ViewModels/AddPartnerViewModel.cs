@@ -1,22 +1,15 @@
-﻿using GnuConvert.Models.PartnersAndRules;
-using GnuConvert.Services.Conversion;
+﻿using GnuConvert.ExceptionHandling;
+using GnuConvert.Models.PartnersAndRules;
 using GnuConvert.Services.Conversion.HelpFunctionsforConversion;
 using GnuConvert.Services.GlAssignmentService;
-using GnuConvert.Services.Settings;
-using GnuConvert.Services.Storage;
-using GnuConvert.ViewModels;
-using NPOI.SS.Formula.Functions;
-using Org.BouncyCastle.Utilities.Collections;
-using Stripe;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace GnuConvert.ViewModels
 {
-    public sealed class AddPartnerViewModel : ViewModelBase, INotifyPropertyChanged
+    public sealed class AddPartnerViewModel : ViewModelBase
     {
         RuleMaker ruleMaker;
         private string _selectedBankPath;
@@ -136,49 +129,51 @@ namespace GnuConvert.ViewModels
         {
             _close();
         }
-        private async void Test()
-        {
-            try
-            {
-                await RuleCreation();
-                // opcionális: siker üzenet / UI reset már a VM-ben is lehet
-            }
-            catch (OperationCanceledException)
-            {
-                // opcionális: "Megszakítva"
-            }
-            catch (Exception ex)
-            {
-                // TODO: központi exception handler / user-friendly hiba
-            }
-        }
+   
 
         public async Task RuleCreation()
         {
-         
-    
+            if (SelectedConversionPipeline == null)
+                throw new DomainException("PIPELINE_NOT_SELECTED", "Bank tipus kiválasztása szükséges.");
+
+
 
             await RunAsync(async (p, ct) =>
             {
-                ruleMaker = new RuleMaker(SelectedBankPath, SelectInvoiceFilePath);
+                 ruleMaker = new RuleMaker(SelectedBankPath, SelectInvoiceFilePath);
                 await Task.Run(() => ruleMaker.RunRuleCreation(p,ct,SelectedConversionPipeline!.Value));
                 RowsTemp = ruleMaker.GetRuleRows();
                 AddRows();
               
-               
-
                 Progress.Message = "";
                 Progress.Value = 0;
+               
+
                 
             });
 
           
         }
+        private void Validate()
+        {
+            if (!IsBankFileChosen)
+                throw new DomainException("BANK_FILE_MISSING", "Bank fájl nincs kiválasztva.");
+
+            if (!IsInvoiceFilechosen)
+                throw new DomainException("INVOICE_FILE_MISSING", "Számla történet nincs kiválasztva.");
+
+            if (string.IsNullOrWhiteSpace(PartnerName))
+                throw new DomainException("INVALID_PARTNER_NAME", "Partner név szükéges.");
+
+            if (!IsPipelineChosen || SelectedConversionPipeline == null)
+                throw new DomainException("PIPELINE_NOT_SELECTED", "Bank kiválasztása szükséges.");
+        }
         private void MakePartner() {
 
-          
-            if (IsBankFileChosen && IsInvoiceFilechosen && PartnerName != null && PartnerName != ""&& IsPipelineChosen)
+            try
             {
+                Validate();
+
                 NewPartnerId = TextFormatting.Normalize(PartnerName);
                 List<Rule> rules = new List<Rule>();
                 rules = ruleMaker.GetRules(RowsTemp);
@@ -188,10 +183,18 @@ namespace GnuConvert.ViewModels
                 _load();
                 _close();
             }
-            else { 
-            // Hiba Valamit nem adott meg!
+            catch (AppException ex)
+            {
+           
+                HandleAppException(ex);
             }
-                
+            catch (Exception ex)
+            {
+                MessageBox.Show("Hiba történt a partner létrehozása során.");
+            }
+
+
+
         }
         private void RowOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -222,11 +225,9 @@ namespace GnuConvert.ViewModels
  }
             
 
-        private void SelectBankFile()
+        private async void SelectBankFile()
         {
-            try
-            {
-                
+              
                 using var dialog = new OpenFileDialog();
                 DialogResult result = dialog.ShowDialog();
 
@@ -234,20 +235,17 @@ namespace GnuConvert.ViewModels
                 {
                     SelectedBankPath = dialog.FileName;
                     IsBankFileChosen = true;
-                    Test();
-                    //ruleMaker = new RuleMaker(SelectedBankPath, SelectInvoiceFilePath);
-                    //ruleMaker.RunRuleCreation(SelectedConversionPipeline!.Value);
-                    // RowsTemp = ruleMaker.GetRuleRows();
-                    //AddRows();
+                   
+                    try
+                    {
+                        await RuleCreation();
+                    }
+                    catch (AppException ex)
+                    {
+                        HandleAppException(ex);
+                }
                 }
 
-            }
-            catch (Exception k)
-            {
-                MessageBox.Show(Convert.ToString(k), "Nem található a fájl.");
-
-
-            }
         }
         public void AddRows()
         {
@@ -260,9 +258,7 @@ namespace GnuConvert.ViewModels
         }
         private void SelectInvoiceFile()
         {
-            try
-            {
-
+           
                     using var dialog = new OpenFileDialog();
                     DialogResult result = dialog.ShowDialog();
 
@@ -272,18 +268,10 @@ namespace GnuConvert.ViewModels
                         IsInvoiceFilechosen = true;
                 
                     }
-            }
-            catch (Exception k)
-            {
-                MessageBox.Show(Convert.ToString(k), "Nem található a fájl.");
-
-
-            }
+        
         }
         
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string? name = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        
     }
 
 }

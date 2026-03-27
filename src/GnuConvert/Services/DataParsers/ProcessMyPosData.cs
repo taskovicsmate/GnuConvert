@@ -1,4 +1,5 @@
 ﻿
+using GnuConvert.ExceptionHandling;
 using GnuConvert.Models.MyPos;
 
 namespace GnuConvert.Services.DataParsers
@@ -8,9 +9,10 @@ namespace GnuConvert.Services.DataParsers
         public List<MyPosRow> Parse(List<string> lines)
         {
             if (lines == null)
-            { 
-            //Hiba esetén üres listát adunk vissza
-                return new List<MyPosRow>();
+            {
+                throw new DomainException(
+                   "INVALID_INPUT",
+                   "A MyPos fájl sora nem lehet üres. Hibás a fájl.");
 
             }
             List<MyPosRow> result = new List<MyPosRow>();

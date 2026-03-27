@@ -1,9 +1,5 @@
-﻿using GnuConvert.Models.Bank;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GnuConvert.ExceptionHandling;
+using GnuConvert.Models.Bank;
 
 namespace GnuConvert.Services.DataParsers
 {
@@ -12,21 +8,24 @@ namespace GnuConvert.Services.DataParsers
 
         public List<Items> Parse(List<string> lines) {
             if (lines==null) {
-                //Hiba dobása lesz itt majd
+                throw new DomainException(
+                   "INVALID_INPUT",
+                   "Banki adat sor nem lehet üres. Hibás sor.");
             }
             List<Items> BankItems = new List<Items>();
             foreach (string line in lines) {
+              
                 if (line == null || line.Length < 2)
                 {
 
-                    //logolás lesz itt majd 
+                    continue;
                 }
                 else {
 
                     var Cells = line.Split(';');
                     if (Cells.Length < 8)
                     {
-                        //logolás lesz itt majd 
+                       
                         continue;
                     }
                     string Szamlaszam = Cells[0];

@@ -1,21 +1,12 @@
-﻿using GnuConvert.Models.FokonyvSzamok;
+﻿using GnuConvert.ExceptionHandling;
 using GnuConvert.Services.Settings;
 using GnuConvert.Services.Storage;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace GnuConvert.ViewModels
 {
-   public class KonyveloknekSettingsViewModel: INotifyPropertyChanged
+   public class KonyveloknekSettingsViewModel:ViewModelBase
     {
         private readonly SettingsStore _store;
 
@@ -61,11 +52,24 @@ namespace GnuConvert.ViewModels
             
         }
         private void Save() {
-            App.Settings.KivetelesSzamlakHelye = SelectedExceptionFolderPath;
-            App.Settings.KonvertaltSzamlakHelye = SelectedFolderPath;
+            try
+            {
+                App.Settings.KivetelesSzamlakHelye = SelectedExceptionFolderPath;
+                App.Settings.KonvertaltSzamlakHelye = SelectedFolderPath;
 
-            _store.Save(App.Settings);
-            SettingsSet();
+                _store.Save(App.Settings);
+                SettingsSet();
+
+            }
+            catch (AppException ex)
+            {
+
+                HandleAppException(ex);
+            }
+            catch(Exception ex)
+            {
+                HandleUnknownException(ex);
+            }
 
 
         }
@@ -87,15 +91,18 @@ namespace GnuConvert.ViewModels
         }
         private void SelectFolder()
         {
-            using var dialog = new FolderBrowserDialog();
-            DialogResult result = dialog.ShowDialog();
+           
+                using var dialog = new FolderBrowserDialog();
+                DialogResult result = dialog.ShowDialog();
 
-            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
-            {
-                SelectedFolderPath = dialog.SelectedPath;
-                AppSettings.Instance.KonvertaltSzamlakHelye = (dialog.SelectedPath + "\\KonvertaltSzamlak.csv");
-                helyes = true;
-            }
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
+                {
+                    SelectedFolderPath = dialog.SelectedPath;
+                    AppSettings.Instance.KonvertaltSzamlakHelye = (dialog.SelectedPath + "\\KonvertaltSzamlak.csv");
+                    helyes = true;
+                }
+
+      
         }
         private void EXSelectFolder()
         {
@@ -110,9 +117,6 @@ namespace GnuConvert.ViewModels
             }
         }
   
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }
 

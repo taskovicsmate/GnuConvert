@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace GnuConvert.Models.ConvertedInvoices
 {
 
@@ -15,10 +9,6 @@ namespace GnuConvert.Models.ConvertedInvoices
        private ConvertFailure _identificationFailure;
        private bool IsValid { get; set; }
      
-
-    
-       
-
         public ConvertedInvoice() { }
         public ConvertedInvoice(List<string> fejlec,List<string> tetelsor,ConvertFailure failure) {
                 ReszeredmenyFejlec = fejlec;
