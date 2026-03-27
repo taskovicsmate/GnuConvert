@@ -1,23 +1,4 @@
-﻿using GnuConvert.Models.FokonyvSzamok;
-using GnuConvert.ViewModels;
-using NPOI.HPSF;
-using Stripe.Tax;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
-
-
-namespace GnuConvert.Services.Settings
+﻿namespace GnuConvert.Services.Settings
 {
     public class AppSettings
     {
@@ -38,14 +19,14 @@ namespace GnuConvert.Services.Settings
         public static AppSettings CreateDefault() => new()
         {
 
-         KonvertaltSzamlakHelye = @"C:\\Eredmeny",
+             KonvertaltSzamlakHelye = @"C:\\Eredmeny",
 
-         KivetelesSzamlakHelye = @"C:\\Eredmeny",
+             KivetelesSzamlakHelye = @"C:\\Eredmeny",
 
-         Nyelv ="",
+             Nyelv ="",
 
-        Sema  = ""
-    };
+             Sema  = ""
+         };
        
     }
 }

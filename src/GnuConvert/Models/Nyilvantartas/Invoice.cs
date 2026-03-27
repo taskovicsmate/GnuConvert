@@ -1,15 +1,7 @@
-﻿using GnuConvert.Models.Bank;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GnuConvert.Models.Nyilvántartás
+﻿namespace GnuConvert.Models.Nyilvántartás
 {
     public class Invoice
     {
-       // List<InvoiceRecord> invoices = new List<InvoiceRecord>();
         private readonly List<InvoiceRecord> _invoices;
 
         public IReadOnlyList<InvoiceRecord> invoices => _invoices;

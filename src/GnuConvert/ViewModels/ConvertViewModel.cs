@@ -1,24 +1,15 @@
-﻿using GnuConvert.Models.PartnersAndRules;
+﻿using GnuConvert.ExceptionHandling;
+using GnuConvert.Models.PartnersAndRules;
 using GnuConvert.Services.Conversion;
-using GnuConvert.Services.Settings;
 using GnuConvert.Services.Storage;
-using GnuConvert.ViewModels.State;
 using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Globalization;
-using System.Runtime.CompilerServices;
-using System.Security.RightsManagement;
-using System.Windows;
-using System.Windows.Data;
 using System.Windows.Input;
-using static System.Resources.ResXFileRef;
 
 namespace GnuConvert.ViewModels
 {
-    public class ConvertViewModel : ViewModelBase, INotifyPropertyChanged
+    public class ConvertViewModel : ViewModelBase
     {
         /*
             Teendők: 
@@ -42,7 +33,6 @@ namespace GnuConvert.ViewModels
         private readonly PartnerRulesStore _rulesStore;
         Partner partner;
 
-        public bool isPartnerSelected = false;
         public bool _isBankFileChosen = false;
         public bool _isInvoiceFileChosen = false;
         public bool isFokonyvisSzamWriten = false;
@@ -69,18 +59,29 @@ namespace GnuConvert.ViewModels
 
         public ConvertViewModel()
         {
+            
+                ViewLoadedCommand = new RelayCommand(OnViewLoaded);
+                ShowAddPartnerCommand = new RelayCommand(() => CurrentSubView = new AddPartnerViewModel(onSaved: LoadPartners, onClose: CloseSubView, Partners.ToList()));
+                BankFilePathCommand = new RelayCommand(ChoseBankFile);
+                InvoiceFilePathCommand = new RelayCommand(ChoseInvoiceFile);
+                ConvertDataCommand = new RelayCommand(Test);
+                DeletePartnerCommand = new RelayCommand(DeletePartner, () => IsPartnerSelected);
 
-            ViewLoadedCommand = new RelayCommand(OnViewLoaded);
-            ShowAddPartnerCommand = new RelayCommand(() => CurrentSubView = new AddPartnerViewModel(onSaved: LoadPartners, onClose: CloseSubView,Partners.ToList()));
-            BankFilePathCommand = new RelayCommand(ChoseBankFile);
-            InvoiceFilePathCommand = new RelayCommand(ChoseInvoiceFile);
-            ConvertDataCommand = new RelayCommand(Test);
-            DeletePartnerCommand = new RelayCommand(DeletePartner,()=>isPartnerSelected);
-     
-           
-            _rulesStore = App.PartnerRulesStore;
-            LoadPartners();
 
+                _rulesStore = App.PartnerRulesStore;
+                LoadPartners();
+
+         
+        }
+        private bool _isPartnerSelected;
+        public bool IsPartnerSelected
+        {
+            get => _isPartnerSelected;
+            set
+            {
+                _isPartnerSelected = value;
+                OnPropertyChanged();
+            }
         }
         public Partner? SelectedPartner
         {
@@ -96,7 +97,7 @@ namespace GnuConvert.ViewModels
                 {
                    
                     partner = _rulesStore.LoadOrCreateDefault(_selectedPartner.Name,_selectedPartner.Id, _selectedPartner.Pipelines);
-                   isPartnerSelected = true;
+                   IsPartnerSelected = true;
                    
                 }
             }
@@ -194,7 +195,7 @@ namespace GnuConvert.ViewModels
             catch (Exception k)
             {
                
-
+                HandleAppException( new PersistenceException("FILE_SELECTION_ERROR", "Hiba történt a bank fájl kiválasztása során.", k));
 
             }
         }
@@ -217,7 +218,8 @@ namespace GnuConvert.ViewModels
             }
             catch (Exception k)
             {
-              
+
+                HandleAppException( new PersistenceException("FILE_SELECTION_ERROR", "Hiba történt a Nyilvántartás fájl kiválasztása során.", k));
 
 
             }
@@ -227,56 +229,89 @@ namespace GnuConvert.ViewModels
             try
             {
                 await ConvertFilesAsync();
-                // opcionális: siker üzenet / UI reset már a VM-ben is lehet
+
             }
-            catch (OperationCanceledException)
+            catch (AppException ex)
             {
-                // opcionális: "Megszakítva"
+                HandleAppException(ex);
+
             }
             catch (Exception ex)
             {
-                // TODO: központi exception handler / user-friendly hiba
+                HandleUnknownException(ex);
             }
-        }
 
+
+
+
+        }
+        private void Validate()
+        {
+
+            if (!IsBankFileChosen)
+                throw new DomainException("BANK_FILE_MISSING", "Bank fájl nincs kiválasztva.");
+
+            if (!IsPartnerSelected)
+                throw new DomainException("PARTNER_NOT_SELECTED", "Partner nincs kiválasztva.");
+
+            if (!IsInvoiceFileChosen)
+                throw new DomainException("INVOICE_FILE_MISSING", "Nyilvántartás fájl nincs kiválasztva.");
+
+            if (!isFokonyvisSzamWriten)
+                throw new DomainException("GLACCOUNT_NOT_SELECTED", "Fökönyvi szám szükséges.");
+        }
         public async Task ConvertFilesAsync()
         {
-            if (!(isFokonyvisSzamWriten && isPartnerSelected && _isBankFileChosen && _isInvoiceFileChosen))
-            {
-                // TODO: hibaüzenet
-                return;
-            }
+            
 
-            convertingLogic = new MainConvertingLogic(
-                BizNettodKapcsolo, BizNettod, _bankiFokonyviszam,
-                _bankHistoryFileLocationPath, _invoiceFileLocationPath, partner);
+                    Validate();
 
-            await RunAsync(async (p, ct) =>
-            {
-                // 1) ha ez is hosszú: tedd async-sá, vagy Task.Run
-                await Task.Run(() => convertingLogic.LoadData(), ct);
+                    convertingLogic = new MainConvertingLogic(
+                        BizNettodKapcsolo, BizNettod, _bankiFokonyviszam,
+                        _bankHistoryFileLocationPath, _invoiceFileLocationPath, partner);
 
-                // 2) a rendezés nálad CPU-bound -> ezt is háttérszálra
-                await Task.Run(() => convertingLogic.Rendezes(p, ct), ct);
-                Progress.Message = ""; 
-                   Progress.Value = 0;
-              //  CurrentSubView = new ConversionEndedViewModel(App.Settings.KonvertaltSzamlakHelye);
-               CurrentSubView = new ConversionEndedViewModel(App.Settings.KonvertaltSzamlakHelye+ @"\KonvertaltSzamlak.csv", close: CloseSubView);
-                // Ha már van rendes RendezesAsync, akkor:
-                // await convertingLogic.RendezesAsync(p, ct);
-                // de csak akkor jó, ha belül nem UI-threaden darál.
-            });
+                    await RunAsync(async (p, ct) =>
+                    {
+                        
+                        await Task.Run(() => convertingLogic.LoadData(), ct);
 
-            IsBankFileChosen = false;
-            IsInvoiceFileChosen = false;
-            BankiFokonyviszam = "";
+                       
+                        await Task.Run(() => convertingLogic.Rendezes(p, ct), ct);
+                        Progress.Message = ""; 
+                           Progress.Value = 0;
+              
+                       CurrentSubView = new ConversionEndedViewModel(App.Settings.KonvertaltSzamlakHelye+ @"\KonvertaltSzamlak.csv", close: CloseSubView);
+              
+                    });
+
+                    IsBankFileChosen = false;
+                    IsInvoiceFileChosen = false;
+                    BankiFokonyviszam = "";
+           
         }
-        
-        public void DeletePartner() {
- 
-                 _rulesStore.RemovePartner(SelectedPartner.Id);
-                  LoadPartners();
-            isPartnerSelected = false;
+
+        public void DeletePartner()
+        {
+            try
+            {
+
+                if (SelectedPartner == null)
+                    throw new DomainException("PARTNER_NOT_SELECTED", "Nincs kiválasztva partner a törléshez.");
+
+                _rulesStore.RemovePartner(SelectedPartner.Id);
+                LoadPartners();
+                IsPartnerSelected = false;
+
+            }
+            catch (AppException ex)
+            {
+
+                HandleAppException(ex);
+            }
+            catch (Exception ex)
+            {
+                HandleUnknownException(ex);
+            }
         }
         public void LoadPartners()
         {
@@ -291,9 +326,6 @@ namespace GnuConvert.ViewModels
             }
         }
      
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string name)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
        
     }

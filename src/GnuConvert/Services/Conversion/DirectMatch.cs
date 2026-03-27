@@ -1,15 +1,5 @@
-﻿using GnuConvert.Models.Bank;
-using GnuConvert.Models.ConvertedInvoices;
-using GnuConvert.Models.Nyilvántartás;
+﻿using GnuConvert.Models.Nyilvántartás;
 using GnuConvert.Services.Conversion.HelpFunctionsforConversion;
-using NPOI.SS.Formula.Eval;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static GnuConvert.Models.ConvertedInvoices.ConvertedInvoice;
 
 namespace GnuConvert.Services.Conversion
 {
@@ -29,7 +19,11 @@ namespace GnuConvert.Services.Conversion
                  kozwords = formattedKozlemeny.Split(' ');
                 foreach (var word in kozwords)
                 {
-                        found = functions.szallitoKereses(word, invoice);
+                    if (functions.szallitoKereses(word, invoice))
+                    {
+                        found = true;
+                        break; 
+                    }
                     //failure.Reason = $"Direct match not found for '{formattedKozlemeny}', but found for '{word}'";
 
                 }

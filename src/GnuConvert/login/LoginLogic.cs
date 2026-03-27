@@ -1,15 +1,15 @@
-﻿using GnuConvert.login;
+﻿using GnuConvert.ExceptionHandling;
+using GnuConvert.login;
 using GnuConvert.Views;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
-using System.IO;
-using System.Linq.Expressions;
 namespace GnuConvert.ViewModels
 {
-    public class LoginViewModel : INotifyPropertyChanged
+    public class LoginViewModel :ViewModelBase, INotifyPropertyChanged
     {
 
         private string _username;
@@ -51,8 +51,8 @@ namespace GnuConvert.ViewModels
                 if (users == null)
                 {
                     var userexception = new ExceptionContoller();
-                    userexception.Hibakezeles("Nincsenek felhasználó adatok.");
-                    return;
+                    throw new PersistenceException("USER_DATA_LOAD_FAILED", "Nem sikerült betölteni a felhasználói adatokat.");
+                   
                 }
                 // TODO: hitelesítési logika
                 for (int i = 0; i < users.Count; i++)
@@ -85,7 +85,8 @@ namespace GnuConvert.ViewModels
                     }
                     else
                     {
-                        MessageBox.Show("Hibás felhasználónév vagy jelszó", "Bejelentkezés sikertelen", MessageBoxButton.OK, MessageBoxImage.Error);
+                        throw new DomainException("FAILD_LOGIN","Hibás felhasználónév vagy jelszó");
+                       
 
                     }
                    
@@ -94,8 +95,15 @@ namespace GnuConvert.ViewModels
                 }
           
             }
-            catch(Exception e){
-                MessageBox.Show(e.ToString(),"Ismeretlen hiba vagy nincs user fájl", MessageBoxButton.OK, MessageBoxImage.Error);
+            catch (AppException ex)
+            {
+                HandleAppException(ex);
+
+               
+            }
+            catch (Exception ex)
+            {
+                HandleUnknownException(ex);
             }
         }
 

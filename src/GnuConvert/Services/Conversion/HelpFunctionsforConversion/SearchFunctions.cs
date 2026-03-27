@@ -1,12 +1,6 @@
 ﻿using GnuConvert.Models.ConvertedInvoices;
 using GnuConvert.Models.Nyilvántartás;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GnuConvert.Services.Conversion.HelpFunctionsforConversion
 {

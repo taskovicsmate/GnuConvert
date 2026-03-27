@@ -1,14 +1,20 @@
 ﻿using GnuConvert.ExceptionHandling;
-using GnuConvert.Services.Conversion;
 using GnuConvert.ViewModels.State;
-using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using static GnuConvert.ViewModels.ConvertViewModel;
 
 public class ViewModelBase : INotifyPropertyChanged
 {
-    string ErrorMessage="";
+    private string _errorMessage = "";
+    public string ErrorMessage
+    {
+        get => _errorMessage;
+        set
+        {
+            _errorMessage = value;
+            OnPropertyChanged();
+        }
+    }
     public event PropertyChangedEventHandler PropertyChanged;
     protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -18,7 +24,7 @@ public class ViewModelBase : INotifyPropertyChanged
     public ProgressState Progress { get; } = new();
     CancellationTokenSource? _cts;
     public void Cancel() => _cts?.Cancel();
-    private void HandleAppException(AppException ex)
+    public void HandleAppException(AppException ex)
     {
         Log(ex);
 
@@ -45,7 +51,7 @@ public class ViewModelBase : INotifyPropertyChanged
                 break;
         }
     }
-    private void HandleUnknownException(Exception ex)
+    public  void HandleUnknownException(Exception ex)
     {
         Log(ex);
         ErrorMessage = "An unexpected error occurred. Please try again.";

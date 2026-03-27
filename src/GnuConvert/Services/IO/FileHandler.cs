@@ -1,19 +1,9 @@
-﻿using GnuConvert.Models.Bank;
+﻿using GnuConvert.ExceptionHandling;
+using GnuConvert.Models.Bank;
 using GnuConvert.Models.ConvertedInvoices;
 using GnuConvert.Models.MyPos;
 using GnuConvert.Models.Nyilvántartás;
 using GnuConvert.Services.DataParsers;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Security.RightsManagement;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Shapes;
-using static GnuConvert.ViewModels.ConvertViewModel;
 namespace GnuConvert.Services.IO
 {
     public class FileHandler
@@ -40,9 +30,10 @@ namespace GnuConvert.Services.IO
 
         public Invoice LoadInvoice() {
             if (InvoiceFileLocation == null) {
-                // MessageBox.Show("Nincs megadva a nyilvántartás fájl helye","Hiba");
-                //Hiát kell kezelni
-                return null;
+                throw new DomainException(
+                   "INVOICE_PATH_MISSING",
+                   "Számlatörténet fájl nincs beállítva.");
+               
             }
             else {
                 List<string> invoiceData = new FileReader().FileReaderFunction(InvoiceFileLocation);
@@ -56,8 +47,9 @@ namespace GnuConvert.Services.IO
         public MyPosData LoadMyPos() {
             if (BankFileLocation == null)
             {
-                //Hibaat kell kezelni
-                return null;
+                throw new DomainException(
+                   "BANK_PATH_MISSING",
+                   "Bank fájl nincs beállítva.");
             }
             else {
                 List<string> myposData = new FileReader().FileReaderFunction(BankFileLocation);

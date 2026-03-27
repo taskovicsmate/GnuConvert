@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GnuConvert.ExceptionHandling;
 
 namespace GnuConvert.Models.MyPos
 {
@@ -15,10 +11,20 @@ namespace GnuConvert.Models.MyPos
         }
         public MyPosData(List<MyPosRow> rows)
         {
+            if (rows == null || rows.Count == 0)
+                throw new DomainException(
+                    "EMPTY_DATA",
+                    "Nincsenek MyPos tételek.");
+
             Items = rows;
         }
         public void AddRow(MyPosRow row)
         {
+            if(row == null)
+                throw new DomainException(
+                    "INVALID_ROW",
+                    "A MyPos sor üres.");
+            
             Items.Add(row);
         }
 

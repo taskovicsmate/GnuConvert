@@ -1,12 +1,6 @@
-﻿using ExcelDataReader;
-using GnuConvert.Models.FokonyvSzamok;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+using GnuConvert.ExceptionHandling;
 namespace GnuConvert.Services.IO
 {
     public class FileReader
@@ -39,13 +33,26 @@ namespace GnuConvert.Services.IO
 
 
             }
-            catch (Exception e)
+            catch (IOException ex)
             {
-                //Rossz megoldás A sevice rétegnek nem dolga az UI kezelése
-                //esetleges megoldás tovább doás vagy esemény generálás
-                // MessageBox.Show(e.StackTrace, "Nem Sikerült a banki fájlt beolvasása.");
-
-
+                throw new PersistenceException(
+                    "FILE_READ_ERROR",
+                    $"Failed to read file: {FileLocation}",
+                    ex);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                throw new PersistenceException(
+                    "FILE_ACCESS_DENIED",
+                    $"Access denied to file: {FileLocation}",
+                    ex);
+            }
+            catch (ArgumentException ex)
+            {
+                throw new PersistenceException(
+                    "INVALID_ENCODING",
+                    "Unsupported file encoding.",
+                    ex);
             }
             return bankLines;
 
