@@ -1,3 +1,5 @@
+> Copyright © 2026 Taskovics Máté. All rights reserved.
+
 # GnuConvert Accounting Automation Tool
 
 A desktop application written in C# (WPF) that automates accounting workflows for accounting offices.  
