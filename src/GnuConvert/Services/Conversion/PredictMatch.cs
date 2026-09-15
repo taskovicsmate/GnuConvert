@@ -5,15 +5,20 @@ namespace GnuConvert.Services.Conversion
 {
     public class PredictMatch
     {
-        public string PredictSearch(string kozlemeny,string partnerNev,Partner partner)
+        private readonly GlAssigmentCore _assignmentCore = new();
+
+        public AccountPrediction PredictSearchDetailed(string kozlemeny, string partnerNev, Partner partner)
         {
-           string accountNumber = "";
+            return _assignmentCore.PredictAccountDetailed(kozlemeny, partnerNev, partner);
+        }
 
-           
-            GlAssigmentCore sc = new GlAssigmentCore();
-            accountNumber = sc.PredictAccount(kozlemeny +" "+ partnerNev,partner);
-
-            return accountNumber;
+        public string? PredictSearch(string kozlemeny, string partnerNev, Partner partner)
+        {
+            var prediction = PredictSearchDetailed(kozlemeny, partnerNev, partner);
+            System.Diagnostics.Debug.WriteLine(
+                $"Szabályalapú predikció: {prediction.Account ?? "nincs találat"}; " +
+                $"bizalom: {prediction.Confidence:P0}; ok: {prediction.Reason}");
+            return prediction.Account;
         }
     }
 }

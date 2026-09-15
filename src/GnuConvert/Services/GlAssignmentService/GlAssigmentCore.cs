@@ -7,64 +7,16 @@ namespace GnuConvert.Services.GlAssignmentService
 {
     public class GlAssigmentCore
     {
-        
-  
-       
-        public string PredictAccount(string description,Partner partner)
-        {
-            if (string.IsNullOrWhiteSpace(description))
-                throw new DomainException(
-                    "INVALID_DESCRIPTION",
-                    "Description cannot be empty.");
+        private readonly AccountRuleMatcher _matcher = new();
 
-            if (partner == null)
-                throw new DomainException(
-                    "INVALID_PARTNER",
-                    "Partner cannot be null.");
+        public AccountPrediction PredictAccountDetailed(
+            string? transactionText,
+            string? partnerName,
+            Partner partner) => _matcher.Match(partner, transactionText, partnerName);
 
-            if (partner.Rules == null)
-                throw new DomainException(
-                    "INVALID_RULES",
-                    "Partner rules are not defined.");
-
-            string text = TextFormatting.Normalize(description);
-           
-            var textParts = text.Split(' ');
-            
-            
-            var scores = new Dictionary<string, int>();
-
-            foreach (var rule in partner.Rules)
-            {
-                if (SearchFunctions.SzovegKereso(rule.Keyword, text, 0, 0))
-                {
-                    if (!scores.ContainsKey(rule.Account))
-                        scores[rule.Account] = 0;
-
-                    scores[rule.Account] += rule.Score;
-                }
-                //else
-                //{
-                //    foreach (var part in textParts)
-                //    {
-
-                //        if (SearchFunctions.SzovegKereso(part, rule.Keyword, 0, 0))
-                //        {
-                //            if (!scores.ContainsKey(rule.Account))
-                //                scores[rule.Account] = 0;
-
-                //            scores[rule.Account] += rule.Score;
-                //        }
-                //    }
-
-                //}
-            }
-
-            if (scores.Count == 0)
-                return null; // nincs találat
-
-            return scores.OrderByDescending(x => x.Value).First().Key;
-        }
+        // Megtartott kompatibilitási belépési pont a régebbi hívók számára.
+        public string? PredictAccount(string description, Partner partner) =>
+            PredictAccountDetailed(description, string.Empty, partner).Account;
 
     }
 }

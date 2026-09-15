@@ -93,7 +93,7 @@ namespace GnuConvert.Services.Conversion.MyPosConversion
                 var transactionType = _bank.Items.Select(i => i.TransactionType).ToList();
                 var description = _bank.Items.Select(i => i.Description).ToList();
                 var Osszegek = _bank.Items.Select(i => i.Ammount).ToList();
-
+            
                 var counter = 0;
 
                 for (int i = 0; i < _bank.Items.Count; i++)
@@ -127,14 +127,14 @@ namespace GnuConvert.Services.Conversion.MyPosConversion
                     }
                     if (!found)
                     {
-                    //3. ha még mindig nincs egyezés akkor történik a fokonyvszám megjósolása mert akkor az nem egy szállító tétel.
-                    if (transactionType[i]== "Outgoing bank transfer") { 
-                        predictedFokonyviSzam = _predictMatch.PredictSearch(transactionType[i], "", _partner);
+                        //3. ha még mindig nincs egyezés akkor történik a fokonyvszám megjósolása mert akkor az nem egy szállító tétel.
+                        if (transactionType[i]== "Outgoing bank transfer") { 
+                            predictedFokonyviSzam = _predictMatch.PredictSearch(transactionType[i], description[i], _partner);
                     
-                    }
-                        predictedFokonyviSzam = _predictMatch.PredictSearch(transactionType[i], "", _partner);
+                        }
+                         predictedFokonyviSzam = _predictMatch.PredictSearch(transactionType[i], description[i], _partner);
 
-                    }
+                }
                     if (predictedFokonyviSzam == null && !found)
                     {
                         Exception = true;

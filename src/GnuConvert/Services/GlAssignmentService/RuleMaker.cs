@@ -185,29 +185,31 @@ namespace GnuConvert.Services.GlAssignmentService
             List<Rule> rules = new List<Rule>();
             foreach (var item in RuleData)
             {
-                Rule rule;
-
-
                 if ( item.UserLedger == null ||item.UserLedger.Length>=3 && item.UserLedger[0]=='4'&& item.UserLedger[1] == '5'&& item.UserLedger[2] == '4'|| item.UserLedger=="")
                     continue;
 
                 string kozlemeny = TextFormatting.Normalize(item.Kozlemeny);
                 string partnernName = TextFormatting.Normalize(item.PartnerName);
 
-                if (kozlemeny == "" || kozlemeny == null||KozlemenyFound(item.Kozlemeny))
-                {
-
-                    rule = new Rule(partnernName, item.UserLedger, ScoreCounting(item.Kozlemeny));
-                }
-                else
-                {
-                    rule = new Rule(kozlemeny, item.UserLedger, ScoreCounting(item.Kozlemeny));
-
-                }
+                // A régi formátum csak a Keyword mezőt töltötte. Az új formátum
+                // külön eltárolja a közleményt és a partnernevet, hogy a
+                // predikció két független bizonyítékból dolgozhasson.
+                string keyword = !string.IsNullOrWhiteSpace(kozlemeny)
+                    ? kozlemeny
+                    : partnernName;
+                var rule = new Rule(
+                    keyword,
+                    item.UserLedger,
+                    Math.Max(1, ScoreCounting(item.Kozlemeny)),
+                    partnernName,
+                    kozlemeny);
 
                 rules.Add(rule);
             }
-            var unique = rules.GroupBy(r => (r.Keyword, r.Account)).Select(g => g.First()).ToList();
+            var unique = rules
+                .GroupBy(r => (r.Keyword, r.PartnerName, r.TransactionText, r.Account))
+                .Select(g => g.First())
+                .ToList();
             return unique ;
         }
         public bool KozlemenyFound(string koz) { 
